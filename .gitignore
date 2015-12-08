@@ -1,0 +1,6 @@
+__pycache__
+*.sqlite3
+.idea
+.coverage
+secret.py
+*.bak

@@ -1,0 +1,1 @@
+# BAgile - django project

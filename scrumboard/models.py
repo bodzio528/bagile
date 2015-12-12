@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 
+from django.core.urlresolvers import reverse
+
 from django.contrib.auth.models import User
 
 
@@ -37,6 +39,9 @@ class Sprint(models.Model):
     def fetch_active():
         return [sprint for sprint in list(Sprint.objects.all()) if sprint.is_active()]
 
+    def get_absolute_url(self):
+        return reverse('scrumboard:sprint_details', kwargs={'pk': self.pk})
+
 
 # ITEM
 # +-------------------------------------+
@@ -51,11 +56,12 @@ class Sprint(models.Model):
 class Item(models.Model):
     COMMITTED = 1
     WIP = 2
-    REVIEW = 3
-    FIX = 4
-    EXTERNAL_REVIEW = 5
-    BLOCKED = 6
-    DONE = 7
+    PENDING_REVIEW = 3
+    REVIEW = 4
+    FIX = 5
+    EXTERNAL_REVIEW = 6
+    BLOCKED = 7
+    DONE = 8
 
     name = models.CharField(
         max_length=63,
@@ -69,6 +75,7 @@ class Item(models.Model):
         choices=(
             (COMMITTED, 'Committed'),
             (WIP, 'Work In Progress'),
+            (PENDING_REVIEW, 'Ready to Review'),
             (REVIEW, 'Under Review'),
             (FIX, "Fix"),
             (EXTERNAL_REVIEW, 'External Review'),
@@ -94,6 +101,9 @@ class Item(models.Model):
     def __str__(self):
         return '{0}: {1}'.format(self.name, self.description)
 
+    def get_absolute_url(self):
+        return reverse('scrumboard:item_details', kwargs={'pk': self.pk})
+
 
 # That's now the name of the reverse filter
 # Item.objects.filter(tag__name="LTE3033")
@@ -110,6 +120,9 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('scrumboard:tag_details', kwargs={'pk': self.pk})
 
 
 # +--------+--------------------------------------------+--------------+
@@ -138,4 +151,7 @@ class UserProfile(models.Model):
     )
 
     def __str__(self):
-        return 'UserProfile {0}'.format(self.user.name)
+        return 'User {0}'.format(self.user.name)
+
+    def get_absolute_url(self):
+        return reverse('scrumboard:user_profile_details', kwargs={'pk': self.pk})

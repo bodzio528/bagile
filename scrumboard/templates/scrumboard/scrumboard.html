@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title></title>
+        <style>
+            div.container {
+                width: 1600px;
+                height: 500px;
+                margin: 0 auto;
+            }
+
+
+            div.scrumboard-table {
+                width: 100%;
+                height: 100%;
+                display: flex;
+            }
+
+            div.scrumboard-table div.part {
+                height: 100%;
+                display: table;
+                border: 1px solid red;
+                border-collapse: collapse;
+            }
+
+            div.scrumboard-table div.assigned-items {
+                width: 60%;
+                float: left;
+            }
+            div.scrumboard-table div.unassigned-items {
+                width: 40%;
+            }
+
+
+            div.scrumboard-table div.row,
+            div.scrumboard-table div.row-header {
+                border-style: dotted;
+                border-color: blue;
+                border-width: 1px 0;
+                display:table-row;
+            }
+            div.scrumboard-table div.row-header {
+                background-color: #c0c0FF;
+                height: 30px;
+            }
+
+
+            div.scrumboard-table div.cell,
+            div.scrumboard-table div.cell-header {
+                border-style: dotted;
+                border-color: green;
+                border-width: 0 1px;
+                display: table-cell;
+            }
+            div.scrumboard-table div.cell-header {
+                text-align: center;
+                vertical-align: middle;
+            }
+
+
+            div.scrumboard-table div.column-user {
+                width: 10%;
+            }
+            div.scrumboard-table div.column-status {
+                width: 18%;
+            }
+            div.scrumboard-table div.column-committed {
+                width: 60%;
+            }
+            div.scrumboard-table.div.column-done {
+                width: 40%;
+            }
+        </style>
+    </head>
+    <body>
+    <h1>DEMO - NO REAL DATA</h1>
+        <div class="container">
+            <div class="scrumboard-table">
+                <div class="part assigned-items">
+                    <div class="row-header">
+                        <div class="cell-header column-user"></div>
+                        <div class="cell-header column-status">WIP</div>
+                        <div class="cell-header column-status">2 REV</div>
+                        <div class="cell-header column-status">REV SB WORK</div>
+                        <div class="cell-header column-status">FIX</div>
+                        <div class="cell-header column-status">BLK</div>
+                    </div>
+                    <div class="row">
+                        <div class="cell column-user">User 1</div>
+                        <div class="cell column-status"><a href="#">item 1</a></div>
+                        <div class="cell column-status"></div>
+                        <div class="cell column-status"></div>
+                        <div class="cell column-status"></div>
+                        <div class="cell column-status"><a href="#">item 2</a></div>
+                    </div>
+                    <div class="row">
+                        <div class="cell column-user">User 2</div>
+                        <div class="cell column-status"></div>
+                        <div class="cell column-status"><a href="#">item 3</a></div>
+                        <div class="cell column-status"></div>
+                        <div class="cell column-status"><a href="#">item 4</a></div>
+                        <div class="cell column-status"></div>
+                    </div>
+                    <div class="row">
+                        <div class="cell column-user">User 3</div>
+                        <div class="cell column-status"></div>
+                        <div class="cell column-status"></div>
+                        <div class="cell column-status"><a href="#">item 6</a></div>
+                        <div class="cell column-status"><a href="#">item 5</a></div>
+                        <div class="cell column-status"><a href="#">item 7</a></div>
+                    </div>
+                    <div class="row">
+                        <div class="cell column-user">User 4</div>
+                        <div class="cell column-status"></div>
+                        <div class="cell column-status"></div>
+                        <div class="cell column-status"></div>
+                        <div class="cell column-status"><a href="#">item 8</a></div>
+                        <div class="cell column-status"></div>
+                    </div>
+                    <div class="row">
+                        <div class="cell column-user">User 5</div>
+                        <div class="cell column-status"><a href="#">item 9</a></div>
+                        <div class="cell column-status"><a href="#">item 11</a></div>
+                        <div class="cell column-status"></div>
+                        <div class="cell column-status"></div>
+                        <div class="cell column-status"><a href="#">item 10</a></div>
+                    </div>
+                    <div class="row">
+                        <div class="cell column-user">User 6</div>
+                        <div class="cell column-status"></div>
+                        <div class="cell column-status"></div>
+                        <div class="cell column-status"><a href="#">item 12</a></div>
+                        <div class="cell column-status"></div>
+                        <div class="cell column-status"></div>
+                    </div>
+                </div>
+                <div class="part unassigned-items">
+                    <div class="row-header">
+                        <div class="cell-header column-committed">COMMITTED</div>
+                        <div class="cell-header column-done">DONE</div>
+                    </div>
+                    <div class="row">
+                        <div class="cell"><a href="#">committed_item1</a> <a href="#">committed_item2</a></div>
+                        <div class="cell"><a href="#">done_item1</a> <a href="#">done_item2</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

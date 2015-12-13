@@ -1,15 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
-    <h1>object id = {{ object.id }}</h1>
-    <form action="{% if object.id %}{% url 'scrumboard:item_update' pk=object.id %}{% else %}{% url 'scrumboard:item_create' %}{% endif %}" method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Submit">
-    </form>
-</body>
-</html>
+{% extends 'scrumboard/base.html' %}
+
+{% block head_title %}Item {% if object.id %}Update{% else %}Create{% endif %}{% endblock %}
+
+{% block content %}
+        <form action="{% if object.id %}{% url 'scrumboard:item_update' pk=object.id %}{% else %}{% url 'scrumboard:item_create' %}{% endif %}" method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Submit">
+        </form>
+{% endblock %}

@@ -1,32 +1,29 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
-    <h1>Items</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Status</th>
-                <th>Assignee</th>
-                <th>Edit</th>
-            </tr>
-        </thead>
-        <tbody>
-    {% for item in all_items %}
-            <tr>
-                <td><a href="{% url 'scrumboard:item_details' pk=item.pk %}">{{ item.name }}</a></td>
-                <td>{{ item.description }}</td>
-                <td>{{ item.status }}</td>
-                <td>{{ item.assignee }}<a href="#">[view profile]</a></td>
-                <td><a href="{% url 'scrumboard:item_update' pk=item.pk %}">[edit]</a></td>
-            </tr>
-    {% endfor %}
-        </tbody>
-    </table>
-</body>
-</html>
+{% extends 'scrumboard/base.html' %}
+
+{% block head_title %}Item List{% endblock %}
+
+{% block content %}
+        <h1>Items</h1>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Assignee</th>
+                    <th>Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+        {% for item in all_items %}
+                <tr>
+                    <td><a href="{% url 'scrumboard:item_details' pk=item.pk %}">{{ item.name }}</a></td>
+                    <td>{{ item.description }}</td>
+                    <td>{{ item.status }}</td>
+                    <td>{{ item.assignee }}<a href="#">[view profile]</a></td>
+                    <td><a href="{% url 'scrumboard:item_update' pk=item.pk %}">[edit]</a></td>
+                </tr>
+        {% endfor %}
+            </tbody>
+        </table>
+{% endblock %}

@@ -1,1 +1,1 @@
-python manage.py tests
+python manage.py test

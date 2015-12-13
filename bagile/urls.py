@@ -17,7 +17,14 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 
+
+def home(request):
+    from django.http import HttpResponse
+    html = '<html><head><title>Home Page</title></head><body><a href="/scrumboard/">Go To Scrumboard</a></body></html>'
+    return HttpResponse(html)
+
 urlpatterns = [
+    url(r'^$', home, name='home'),
     url(r'^admin/', admin.site.urls),
     url(r'^scrumboard/', include('scrumboard.urls')),
 ]

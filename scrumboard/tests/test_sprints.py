@@ -1,5 +1,6 @@
 import datetime
 from unittest.mock import patch
+
 from django.test import TestCase
 from django.utils import timezone
 
@@ -76,17 +77,50 @@ class GetActiveSprintsTestCase(TestCase):
         self.in_one_week = self.now + datetime.timedelta(days=7)
 
     def test_returns_empty_list_if_no_sprint_in_database(self):
-        self.assertEqual([], Sprint.fetch_active())
+        self.assertEqual([], Sprint.get_active_sprints())
 
     def test_returns_none_if_no_sprints_active(self):
         Sprint.objects.create(start_date=self.one_week_ago, end_date=self.three_days_ago)
 
-        self.assertEqual([], Sprint.fetch_active())
+        self.assertEqual([], Sprint.get_active_sprints())
 
     def test_returns_active_sprint_as_current_sprint(self):
         sprint = Sprint.objects.create(start_date=self.three_days_ago, end_date=self.in_four_days)
 
-        active_sprints = Sprint.fetch_active()
+        active_sprints = Sprint.get_active_sprints()
 
         self.assertEqual(1, len(active_sprints))
         self.assertIn(sprint, active_sprints)
+
+
+class GetCurrentSprintTestCase(TestCase):
+    def setUp(self):
+        self.date_past = datetime.date(2015, 4, 15)
+        self.date_now = datetime.date(2015, 4, 30)
+        self.date_future = datetime.date(2015, 5, 15)
+
+    def test_returns_none_if_no_sprint_in_database(self):
+        self.assertEqual(None, Sprint.get_current_sprint())
+
+    @patch('scrumboard.models.Sprint.get_active_sprints')
+    def test_returns_single_sprint_if_active_count_is_one(self, active_sprints):
+        sprint = Sprint.objects.create(start_date=self.date_now, end_date=self.date_now)
+        active_sprints.return_value = [sprint]
+
+        self.assertEqual(sprint, Sprint.get_current_sprint())
+
+    @patch('scrumboard.models.Sprint.get_active_sprints')
+    def test_returns_single_objects_if_active_count_is_more_than_one(self, active_sprints):
+        sprint1 = Sprint.objects.create(start_date=self.date_past, end_date=self.date_now)
+        sprint2 = Sprint.objects.create(start_date=self.date_now, end_date=self.date_future)
+        active_sprints.return_value = [sprint1, sprint2]
+
+        self.assertEqual(sprint1, Sprint.get_current_sprint())
+
+    @patch('scrumboard.models.Sprint.get_active_sprints')
+    def test_returns_earlier_started_sprint_if_they_overlap(self, active_sprints):
+        sprint1 = Sprint.objects.create(start_date=self.date_now, end_date=self.date_future)
+        sprint2 = Sprint.objects.create(start_date=self.date_past, end_date=self.date_now)
+        active_sprints.return_value = [sprint1, sprint2]
+
+        self.assertEqual(sprint2, Sprint.get_current_sprint())

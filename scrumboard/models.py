@@ -1,9 +1,7 @@
+from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
-
-from django.core.urlresolvers import reverse
-
-from django.contrib.auth.models import User
 
 
 # SPRINT
@@ -36,8 +34,13 @@ class Sprint(models.Model):
         return self.start_date <= today <= self.end_date
 
     @staticmethod
-    def fetch_active():
+    def get_active_sprints():
         return [sprint for sprint in list(Sprint.objects.all()) if sprint.is_active()]
+
+    @staticmethod
+    def get_current_sprint():
+        sprints = Sprint.get_active_sprints()
+        return sorted(sprints, key=lambda s: s.start_date)[0] if len(sprints) > 0 else None
 
     def get_absolute_url(self):
         return reverse('scrumboard:sprint_details', kwargs={'pk': self.pk})
@@ -154,4 +157,4 @@ class UserProfile(models.Model):
         return 'User {0}'.format(self.user.name)
 
     def get_absolute_url(self):
-        return reverse('scrumboard:user_profile_details', kwargs={'pk': self.pk})
+        return reverse('scrumboard:user_details', kwargs={'pk': self.pk})

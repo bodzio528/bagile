@@ -3,5 +3,11 @@
 {% block head_title %}Sprint Planning{% endblock %}
 
 {% block content %}
-
+    <form method="POST" action="{% url 'scrumboard:sprint_planning' pk=sprint.id %}">
+        {% csrf_token %}
+        <table>
+            {{ formset }}
+        </table>
+        <input type="submit" value="accept">
+    </form>
 {% endblock %}

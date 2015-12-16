@@ -1,0 +1,23 @@
+{% extends 'scrumboard/base.html' %}
+
+{% block head_title %}Sprint Details{% endblock %}
+
+{% block content %}
+    <h1>Sprint details ({{ sprint.id }})</h1>
+    <table>
+        <thead>
+            <th>Name</th><th>{{ sprint.name }}</th>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Start Date</td><td>{{ sprint.start_date}}</td>
+            </tr>
+            <tr>
+                <td>End Date</td><td>{{ sprint.end_date}}</td>
+            </tr>
+            <tr>
+                <td>Capacity</td><td>{{ sprint.capacity }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,11 +1,13 @@
 {% extends 'scrumboard/base.html' %}
 
-{% block head_title %}Item {% if object.id %}Update{% else %}Create{% endif %}{% endblock %}
+{% block head_title %}{% if item.id %}Update{% else %}Create{% endif %} Item{% endblock %}
 
 {% block content %}
-        <form action="{% if object.id %}{% url 'scrumboard:item_update' pk=object.id %}{% else %}{% url 'scrumboard:item_create' %}{% endif %}" method="POST">
+        <form action="{% if item.id %}{% url 'scrumboard:item_update' pk=item.id %}{% else %}{% url 'scrumboard:item_create' %}{% endif %}" method="POST">
             {% csrf_token %}
-            {{ form.as_p }}
+            <table>
+                {{ form.as_table }}
+            </table>
             <input type="submit" value="Submit">
         </form>
 {% endblock %}

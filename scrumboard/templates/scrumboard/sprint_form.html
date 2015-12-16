@@ -1,0 +1,13 @@
+{% extends 'scrumboard/base.html' %}
+
+{% block head_title %}{% if sprint.id %}Update{% else %}Create{% endif %} Sprint{% endblock %}
+
+{% block content %}
+        <form action="{% if sprint.id %}{% url 'scrumboard:sprint_update' pk=sprint.id %}{% else %}{% url 'scrumboard:sprint_create' %}{% endif %}" method="POST">
+            {% csrf_token %}
+            <table>
+                {{ form.as_table }}
+            </table>
+            <input type="submit" value="Submit">
+        </form>
+{% endblock %}

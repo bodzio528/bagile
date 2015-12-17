@@ -9,18 +9,15 @@ https://docs.djangoproject.com/en/1.9/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
-
 import os
 
-# SECRET_KEY defined in secret.py which is not under version control (create it by copying secret.py.template)
-# SECURITY WARNING: keep the secret key used in production secret!
-from bagile.settings.secret import SECRET_KEY as SECRET
+# production settings defined in secret.py
+# which is not under version control
+# -- create it by copying secret.py.template
+import bagile.secret
 
-SECRET_KEY = SECRET
-
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.realpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../..'))
-
+BASE_DIR = bagile.secret.BASE_DIR
+SECRET_KEY = bagile.secret.SECRET_KEY
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
@@ -75,20 +72,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'bagile.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/1.9/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -104,18 +89,21 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# DEVELOPMENT Databases
+# https://docs.djangoproject.com/en/1.9/ref/settings/#databases
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 # URL of the login page.
@@ -131,3 +119,19 @@ STATICFILES_DIRS = [
 
 # Media files (uploaded Documents, users' Avatars)
 MEDIA_URL = '/media/'
+
+# Indicates if this is development or production
+DEBUG = bagile.secret.DEBUG
+
+CSRF_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
+
+if DEBUG:
+    STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'collected_media')
+else:
+    DATABASES = bagile.secret.DATABASES
+    STATIC_ROOT = bagile.secret.STATIC_ROOT
+    MEDIA_ROOT = bagile.secret.MEDIA_ROOT
+
+ALLOWED_HOSTS = bagile.secret.ALLOWED_HOSTS

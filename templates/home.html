@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block head_title %}Home Page{% endblock %}
+
+{% block content %}
+        <h1>Home Page</h1>
+        <ul>
+            <li>
+                <a href="{% url 'scrumboard:index' %}">Go To Scrumboard</a>
+            </li>
+            <li>
+                <a href="{% url 'login' %}">Log In</a>
+            </li>
+        </ul>
+{% endblock %}

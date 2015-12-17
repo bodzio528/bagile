@@ -12,16 +12,14 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os
 
+# SECRET_KEY and DEBUG defined in secret.py which is not under version control (create it by copying secret.py.template)
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
-
-# SECRET_KEY and DEBUG defined in secret.py which is not under version control (create it by copying secret.py.template)
-from bagile.secret import *
-
 
 # Application definition
 
@@ -54,12 +52,16 @@ ROOT_URLCONF = 'bagile.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -76,7 +78,7 @@ WSGI_APPLICATION = 'bagile.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'var/db/bagile/db.sqlite3'),
     }
 }
 
@@ -113,8 +115,25 @@ USE_L10N = True
 
 USE_TZ = True
 
+# URL of the login page.
+LOGIN_URL = '/login/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
-
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
+
+# Media files (uploaded Documents, users' Avatars)
+
+MEDIA_URL = '/media/'
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+
+ALLOWED_HOSTS = []
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'var/www/bagile/static')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'var/www/bagile/media')

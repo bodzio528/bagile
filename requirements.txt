@@ -1,0 +1,7 @@
+coverage==4.0.3
+Django==1.9
+django-appconf==1.0.1
+django-extra-views==0.7.1
+pep8==1.6.2
+six==1.10.0
+wheel==0.24.0

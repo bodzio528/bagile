@@ -12,10 +12,14 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os
 
-# SECRET_KEY and DEBUG defined in secret.py which is not under version control (create it by copying secret.py.template)
+# SECRET_KEY defined in secret.py which is not under version control (create it by copying secret.py.template)
+# SECURITY WARNING: keep the secret key used in production secret!
+from bagile.settings.secret import SECRET_KEY as SECRET
+
+SECRET_KEY = SECRET
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.realpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../..'))
 
 
 # Quick-start development settings - unsuitable for production
@@ -78,10 +82,9 @@ WSGI_APPLICATION = 'bagile.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'var/db/bagile/db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
@@ -123,17 +126,8 @@ LOGIN_URL = '/login/'
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, 'static'),
 ]
 
 # Media files (uploaded Documents, users' Avatars)
-
 MEDIA_URL = '/media/'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'var/www/bagile/static')
-MEDIA_ROOT = os.path.join(BASE_DIR, 'var/www/bagile/media')

@@ -17,11 +17,11 @@
             <tbody>
         {% for item in all_items %}
                 <tr>
-                    <td><a href="{% url 'scrumboard:item_details' pk=item.pk %}">{{ item.name }}</a></td>
+                    <td><a href="{% url 'scrumboard:item_details' item.pk %}">{{ item.name }}</a></td>
                     <td>{{ item.description }}</td>
                     <td>{{ item.get_status_display }}</td>
                     <td>{{ item.assignee }}<a href="#">[view profile]</a></td>
-                    <td><a href="{% url 'scrumboard:item_update' pk=item.pk %}">[edit]</a></td>
+                    <td><a href="{% url 'scrumboard:item_update' item.pk %}">[edit]</a></td>
                 </tr>
         {% endfor %}
             </tbody>

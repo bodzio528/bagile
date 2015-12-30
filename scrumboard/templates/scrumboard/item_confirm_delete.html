@@ -4,7 +4,7 @@
 
 {% block content %}
     <h1>Item delete</h1>
-    <form action="{% url 'scrumboard:item_delete' pk=item.id %}" method="POST">
+    <form action="{% url 'scrumboard:item_delete' item.pk %}" method="POST">
         {% csrf_token %}
         <p>Do you really want to delete item {{ item.name }}?</p>
         <input type="submit" value="YES!">

@@ -1,4 +1,6 @@
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse_lazy
+from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
@@ -7,13 +9,53 @@ from extra_views import InlineFormSetView
 from scrumboard.models import Item, Sprint
 
 
-class ScrumboardView(ListView):
+class ScrumboardView(TemplateView):
     """
     This View will combine current sprint scrumboard with data like charts, statistics.
     """
-    model = Item
     template_name = 'scrumboard/scrumboard.html'
-    context_object_name = 'all_items'
+
+    def get_context_data(self, **kwargs):
+        context = super(ScrumboardView, self).get_context_data(**kwargs)
+
+        developers = User.objects.filter(groups__name='developers')
+
+        current_sprint = Sprint.get_current_sprint()  # TODO: from session by default
+
+        assigned_items_in_current_sprint = Item.objects.filter(
+                sprint=current_sprint
+        ).exclude(
+                status__in=[Item.COMMITTED, Item.DONE]
+        )
+
+        def select_items_for_user(current_items, user):
+            def split_by_status(items):
+                return {
+                    'WIP': items.filter(status=Item.WIP),
+                    'RDY': items.filter(status=Item.PENDING_REVIEW),
+                    'REV': items.filter(status=Item.REVIEW),
+                    'FIX': items.filter(status=Item.FIX),
+                    'EXT': items.filter(status=Item.EXTERNAL_REVIEW),
+                    'BLK': items.filter(status=Item.BLOCKED)
+                }
+            return {
+                'user': user,
+                'status': split_by_status(current_items.filter(assignee=user))
+            }
+
+        assigned_items = [select_items_for_user(assigned_items_in_current_sprint, user) for user in developers]
+        unassigned_items = {
+            'COMMITTED': Item.objects.filter(status=Item.COMMITTED),
+            'DONE': Item.objects.filter(status=Item.DONE)
+        }
+
+        context.update(
+            sprint=current_sprint,
+            assigned_items=assigned_items,
+            unassigned_items=unassigned_items
+        )
+
+        return context
 
 
 class ItemListView(ListView):

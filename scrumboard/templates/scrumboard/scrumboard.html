@@ -25,11 +25,11 @@
             }
 
             div.scrumboard-table div.assigned-items {
-                width: 60%;
+                width: 70%;
                 float: left;
             }
             div.scrumboard-table div.unassigned-items {
-                width: 40%;
+                width: 30%;
             }
 
 
@@ -63,77 +63,67 @@
                 width: 10%;
             }
             div.scrumboard-table div.column-status {
-                width: 18%;
+                width: 15%;
             }
             div.scrumboard-table div.column-committed {
-                width: 60%;
+                width: 55%;
             }
             div.scrumboard-table.div.column-done {
-                width: 40%;
+                width: 45%;
             }
         </style>
     </head>
     <body>
-    <h1>DEMO - NO REAL DATA</h1>
+        <h1>REAL DATA</h1>
         <div class="container">
             <div class="scrumboard-table">
                 <div class="part assigned-items">
                     <div class="row-header">
-                        <div class="cell-header column-user">SPRINT<a href="#">##</a></div>
+                        <div class="cell-header column-user">SPRINT<a href="#">{{ sprint.name }}</a></div>
                         <div class="cell-header column-status">WIP</div>
-                        <div class="cell-header column-status">2 REV</div>
-                        <div class="cell-header column-status">REV SB WORK</div>
+                        <div class="cell-header column-status">RDY</div>
+                        <div class="cell-header column-status">REV</div>
                         <div class="cell-header column-status">FIX</div>
+                        <div class="cell-header column-status">EXT</div>
                         <div class="cell-header column-status">BLK</div>
                     </div>
+                    {% for assignment in assigned_items %}
                     <div class="row">
-                        <div class="cell column-user">User 1</div>
-                        <div class="cell column-status"><a href="#">item 1</a></div>
-                        <div class="cell column-status"></div>
-                        <div class="cell column-status"></div>
-                        <div class="cell column-status"></div>
-                        <div class="cell column-status"><a href="#">item 2</a></div>
+                        <div class="cell column-user">
+                            <a href="{{ assignment.user.pk }}">{{ assignment.user.username }}</a>
+                        </div>
+                        <div class="cell-header column-status">
+                        {% for item in assignment.status.WIP %}
+                            <a href="{% url 'scrumboard:item_details' item.pk %}">{{ item.name }}</a>
+                        {% endfor %}
+                        </div>
+                        <div class="cell-header column-status">
+                        {% for item in assignment.status.RDY %}
+                            <a href="{% url 'scrumboard:item_details' item.pk %}">{{ item.name }}</a>
+                        {% endfor %}
+                        </div>
+                        <div class="cell-header column-status">
+                        {% for item in assignment.status.REV %}
+                            <a href="{% url 'scrumboard:item_details' item.pk %}">{{ item.name }}</a>
+                        {% endfor %}
+                        </div>
+                        <div class="cell-header column-status">
+                        {% for item in assignment.status.FIX %}
+                            <a href="{% url 'scrumboard:item_details' item.pk %}">{{ item.name }}</a>
+                        {% endfor %}
+                        </div>
+                        <div class="cell-header column-status">
+                        {% for item in assignment.status.EXT %}
+                            <a href="{% url 'scrumboard:item_details' item.pk %}">{{ item.name }}</a>
+                        {% endfor %}
+                        </div>
+                        <div class="cell-header column-status">
+                        {% for item in assignment.status.BLK %}
+                            <a href="{% url 'scrumboard:item_details' item.pk %}">{{ item.name }}</a>
+                        {% endfor %}
+                        </div>
                     </div>
-                    <div class="row">
-                        <div class="cell column-user">User 2</div>
-                        <div class="cell column-status"></div>
-                        <div class="cell column-status"><a href="#">item 3</a></div>
-                        <div class="cell column-status"></div>
-                        <div class="cell column-status"><a href="#">item 4</a></div>
-                        <div class="cell column-status"></div>
-                    </div>
-                    <div class="row">
-                        <div class="cell column-user">User 3</div>
-                        <div class="cell column-status"></div>
-                        <div class="cell column-status"></div>
-                        <div class="cell column-status"><a href="#">item 6</a></div>
-                        <div class="cell column-status"><a href="#">item 5</a></div>
-                        <div class="cell column-status"><a href="#">item 7</a></div>
-                    </div>
-                    <div class="row">
-                        <div class="cell column-user">User 4</div>
-                        <div class="cell column-status"></div>
-                        <div class="cell column-status"></div>
-                        <div class="cell column-status"></div>
-                        <div class="cell column-status"><a href="#">item 8</a></div>
-                        <div class="cell column-status"></div>
-                    </div>
-                    <div class="row">
-                        <div class="cell column-user">User 5</div>
-                        <div class="cell column-status"><a href="#">item 9</a></div>
-                        <div class="cell column-status"><a href="#">item 11</a></div>
-                        <div class="cell column-status"></div>
-                        <div class="cell column-status"></div>
-                        <div class="cell column-status"><a href="#">item 10</a></div>
-                    </div>
-                    <div class="row">
-                        <div class="cell column-user">User 6</div>
-                        <div class="cell column-status"></div>
-                        <div class="cell column-status"></div>
-                        <div class="cell column-status"><a href="#">item 12</a></div>
-                        <div class="cell column-status"></div>
-                        <div class="cell column-status"></div>
-                    </div>
+                    {% endfor %}
                 </div>
                 <div class="part unassigned-items">
                     <div class="row-header">
@@ -141,8 +131,16 @@
                         <div class="cell-header column-done">DONE</div>
                     </div>
                     <div class="row">
-                        <div class="cell"><a href="#">committed_item1</a> <a href="#">committed_item2</a></div>
-                        <div class="cell"><a href="#">done_item1</a> <a href="#">done_item2</a></div>
+                        <div class="cell">
+                        {% for item in unassigned_items.COMMITTED %}
+                            <a href="{% url 'scrumboard:item_details' item.pk %}">{{ item.name }}</a>
+                        {% endfor %}
+                        </div>
+                        <div class="cell">
+                        {% for item in unassigned_items.DONE %}
+                            <a href="{% url 'scrumboard:item_details' item.pk %}">{{ item.name }}</a>
+                        {% endfor %}
+                        </div>
                     </div>
                 </div>
             </div>

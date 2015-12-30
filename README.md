@@ -2,8 +2,8 @@
 
 ## Target URL configuration
     ```
-    [ URL ]                 - - [ NAME ]                     -- [ DESCRIPTION ]
-    scrumboard/             - - index                        -- aggregate functionality for current sprint (scrumboard + charts)
+    [ URL ]                 -S- [ NAME ]                     -- [ DESCRIPTION ]
+    scrumboard/             -p- index                        -- aggregate functionality for current sprint (scrumboard + charts)
         sprint/
             current/        - - sprint_current               -- post: write session['current_sprint']
                 json/       - - sprint_active_json           -- get: json current sprint: from session -> single active -> none

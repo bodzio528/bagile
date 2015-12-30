@@ -74,6 +74,14 @@ class Item(models.Model):
         max_length=255,
         blank=True,
     )
+    estimate_work = models.PositiveIntegerField(
+        default=0,
+        blank=True
+    )
+    estimate_review = models.PositiveIntegerField(
+        default=0,
+        blank=True
+    )
     status = models.IntegerField(
         choices=(
             (COMMITTED, 'Committed'),
@@ -102,41 +110,25 @@ class Item(models.Model):
     )
 
     def __str__(self):
-        return '{0}: {1}'.format(self.name, self.description)
+        return '{0}: {1} [E{2} R{3}]'.format(
+                self.name,
+                self.description,
+                self.estimate_work,
+                self.estimate_review)
 
     def get_absolute_url(self):
         return reverse('scrumboard:item_details', kwargs={'pk': self.pk})
 
 
-# That's now the name of the reverse filter
-# Item.objects.filter(tag__name="LTE3033")
-class Tag(models.Model):
-    item = models.ForeignKey(
-        Item,
-        on_delete=models.CASCADE,
-        related_name="tags",
-        related_query_name="tag",
-    )
-    name = models.CharField(
-        max_length=255,
-    )
-
-    def __str__(self):
-        return self.name
-
-    def get_absolute_url(self):
-        return reverse('scrumboard:tag_details', kwargs={'pk': self.pk})
-
-
-# +--------+--------------------------------------------+--------------+
-# | SPRINT | WIP | REV | FIX | EXT | BLK |  COMMITTED   |     DONE     |
-# +--------+-----------------------------+--------------+--------------+
-# |  IMG 1 |                             |              |              |
-# +--------+-----------------------------+              |              |
-# |  IMG 2 |                             |              |              |
-# +--------+-----------------------------+              |              |
-# |  IMG 3 |                             |              |              |
-# +--------+-----------------------------+--------------+--------------+
+# +--------+--------------------------------------------------+--------------+
+# | SPRINT | WIP | RDY | REV | FIX | EXT | BLK |  COMMITTED   |     DONE     |
+# +--------+-----------------------------------+--------------+--------------+
+# |  IMG 1 |[it]              [it]             | [item]       | [item]       |
+# +--------+-----------------------------------+    [item]    |       [item] |
+# |  IMG 2 |      [it]        [it]             | [item]       |     [item]   |
+# +--------+-----------------------------------+              |              |
+# |  IMG 3 |            [it]                   |   [item]     | [item]       |
+# +--------+-----------------------------------+--------------+--------------+
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
     return 'user_{0}/{1}'.format(instance.user.id, filename)

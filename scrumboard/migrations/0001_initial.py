@@ -34,17 +34,11 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(blank=True, max_length=63)),
                 ('description', models.TextField(blank=True, max_length=255)),
+                ('estimate_work', models.PositiveIntegerField(blank=True, default=0)),
+                ('estimate_review', models.PositiveIntegerField(blank=True, default=0)),
                 ('status', models.IntegerField(choices=[(1, 'Committed'), (2, 'Work In Progress'), (3, 'Ready to Review'), (4, 'Under Review'), (5, 'Fix'), (6, 'External Review'), (7, 'Blocked'), (8, 'Done')], default=1)),
                 ('assignee', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
                 ('sprint', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='scrumboard.Sprint')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Tag',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255)),
-                ('item', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tags', related_query_name='tag', to='scrumboard.Item')),
             ],
         ),
         migrations.CreateModel(

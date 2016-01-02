@@ -1,10 +1,16 @@
 {% extends 'scrumboard/base.html' %}
 
-{% load staticfiles %}
+{% load scrumboard_extras %}
 
 {% block head_title %}Item Details{% endblock %}
 
+{% block rel_stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/scrumboard/css/item_detail.css">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/scrumboard/css/fancy_item.css">
+{% endblock %}
+
 {% block content %}
-    <h1>{{ item.name }}</h1>
-    <p>{{ item.description }}</p>
+    <div class="item">
+        {% fancy_item_detail item %}
+    </div>
 {% endblock %}

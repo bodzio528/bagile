@@ -1,0 +1,30 @@
+    <div class="item-container">
+        <div class="item-header">
+            <div class="item-name fancy-item-colour">
+                <div class="item-name-value">{{ item.name }}</div>
+            </div>
+            <div class="item-estimate-work">
+                <div class="item-estimate-work-label fancy-item-colour">Est:</div>
+                <div class="item-estimate-work-value">{{ item.estimate_work }}</div>
+            </div>
+            <div class="item-estimate-review">
+                <div class="item-estimate-review-label fancy-item-colour">Rev:</div>
+                <div class="item-estimate-review-value">{{ item.estimate_review }}</div>
+            </div>
+        </div>
+        <div class="item-description">{{ item.description }}</div>
+        <div class="item-footer">
+            <div class="item-status">
+                <div class="item-status-label"></div>
+                <div class="item-status-value">{{ item.get_status_display }}</div>
+            </div>
+            <div class="item-assignee">
+                <div class="item-assignee-label">Assigned</div>
+                <div class="item-assignee-value"><a href="#">{{ item.assignee }}</a></div>
+            </div>
+            <div class="item-sprint">
+                <div class="item-sprint-label">Sprint</div>
+                <div class="item-sprint-value"><a href="{% url 'scrumboard:sprint_details' item.sprint.pk %}">{{ item.sprint.name }}</a></div>
+            </div>
+        </div>
+    </div>

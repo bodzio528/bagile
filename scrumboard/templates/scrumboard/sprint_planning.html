@@ -1,13 +1,27 @@
 {% extends 'scrumboard/base.html' %}
 
+{% load scrumboard_extras %}
+
 {% block head_title %}Sprint Planning{% endblock %}
 
+{% block rel_stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/scrumboard/css/sprint_planning.css">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/scrumboard/css/fancy_item.css">
+{% endblock %}
+
 {% block content %}
-    <form method="POST" action="{% url 'scrumboard:sprint_planning' pk=sprint.id %}">
-        {% csrf_token %}
-        <table>
-            {{ formset }}
-        </table>
-        <input type="submit" value="accept">
-    </form>
+    <div class="wrapper">
+        <form method="POST" action="{% url 'scrumboard:sprint_planning' sprint.pk %}">
+            {% csrf_token %}
+            {{ formset.management_form }}
+            <div class="masonry">
+            {% for form in formset %}
+                <div class="item">
+                {% fancy_item_form form %}
+                </div>
+            {% endfor %}
+            </div>
+            <input type="submit" value="accept">
+        </form>
+    </div>
 {% endblock %}

@@ -1,0 +1,14 @@
+div.item {
+    background-color: #eee;
+    display: block;
+    margin: 1em auto;
+    width: 500px;
+
+    background: #fff;
+    padding: 1em;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-shadow: 2px 2px 4px 0 #ccc;
+}
+

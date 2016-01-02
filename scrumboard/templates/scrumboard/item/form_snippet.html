@@ -1,0 +1,34 @@
+    <div class="item-container">
+        <div class="item-header">
+            <div class="item-name fancy-item-colour">
+                <div class="item-name-label">{{ form.name.label_tag }}</div>
+                <div class="item-name-value">{{ form.name }}</div>
+            </div>
+            <div class="item-estimate-work">
+                <div class="item-estimate-work-label fancy-item-colour">{{ form.estimate_work.label_tag }}</div>
+                <div class="item-estimate-work-value">{{ form.estimate_work }}</div>
+            </div>
+            <div class="item-estimate-review">
+                <div class="item-estimate-review-label fancy-item-colour">{{ form.estimate_review.label_tag }}</div>
+                <div class="item-estimate-review-value">{{ form.estimate_review }}</div>
+            </div>
+        </div>
+        <div class="item-description">{{ form.description }}</div>
+        <div class="item-footer">
+            <div class="item-status">
+                <div class="item-status-label">{{ form.status.label_tag }}</div>
+                <div class="item-status-value">{{ form.status }}</div>
+            </div>
+            <div class="item-assignee">
+                <div class="item-assignee-label">{{ form.assignee.label_tag }}</div>
+                <div class="item-assignee-value">{{ form.assignee }}</div>
+            </div>
+            <div class="item-sprint">
+                <div class="item-sprint-label">{{ form.sprint.label_tag }}</div>
+                <div class="item-sprint-value">{{ form.sprint }}</div>
+            </div>
+        </div>
+    </div>
+    {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+    {% endfor %}

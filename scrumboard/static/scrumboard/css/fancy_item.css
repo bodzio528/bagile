@@ -1,0 +1,115 @@
+/*** CONTAINER ***/
+div.item-container {
+    border: 1px solid black;
+}
+
+/*** HEADER ***/
+div.item-header {
+    border-width: 0 0 1px 0;
+    border-color: black;
+    border-style: solid;
+    display: flex;
+}
+
+/* NAME CELL */
+div.item-name {
+    border-width: 0 1px 0 0;
+    border-color: black;
+    border-style: solid;
+    width: 50%;
+}
+
+div.item-name-label {
+}
+
+div.item-name-value {
+}
+
+/* ESTIMATE WORK CELL */
+div.item-estimate-work {
+    border-width: 0 1px 0 0;
+    border-color: black;
+    border-style: solid;
+    width: 25%;
+}
+
+div.item-estimate-work-label {
+    border-width: 0 0 1px 0;
+    border-color: black;
+    border-style: solid;
+}
+
+div.item-estimate-work.value {
+}
+
+/* ESTIMATE REVIEW CELL */
+div.item-estimate-review {
+    width: 25%;
+}
+
+div.item-estimate-review-label {
+    border-width: 0 0 1px 0;
+    border-color: black;
+    border-style: solid;
+}
+
+div.item-estimate-review-value {
+}
+
+/*** DESCRIPTION ***/
+div.item-description {
+    min-height: 3em;
+    text-align: center;
+    margin: 1em 0;
+}
+
+/*** FOOTER ***/
+div.item-footer {
+    border-width: 1px 0 0 0;
+    border-color: black;
+    border-style: solid;
+    display: flex;
+}
+
+/* STATUS CELL */
+div.item-status {
+    width: 33%;
+}
+
+div.item-status-label {
+    display: inline;
+}
+
+div.item-status-value {
+    display: inline;
+}
+
+/* ASSIGNEE CELL */
+div.item-assignee {
+    width: 33%;
+}
+
+div.item-assignee-label {
+    display: inline;
+}
+
+div.item-assignee-value {
+    display: inline;
+}
+
+/* SPRINT CELL */
+div.item-sprint {
+    width: 34%;
+}
+
+div.item-sprint-label {
+    display: inline;
+}
+
+div.item-sprint-value {
+    display: inline;
+}
+
+.fancy-item-colour {
+    background-color: #eee;
+}

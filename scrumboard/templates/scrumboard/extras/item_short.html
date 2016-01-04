@@ -1,0 +1,13 @@
+{% load scrumboard_extras %}
+
+<div class="col-xs-6 item-box">
+    <div class="row">
+        <span class="col-xs-6">E:{{ item.estimate_work }}</span>
+        <span class="col-xs-6">R:{{ item.estimate_review }}</span>
+    </div>
+    <div class="row">
+        <span class="col-xs-12">
+            <a data-toggle="popover" data-trigger="hover" title="{{ item.name }}" data-content="{{ item.description }}" href="{% url 'scrumboard:item_details' item.pk %}">{{ item.name }}</a>
+        </span>
+    </div>
+</div>

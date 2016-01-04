@@ -1,7 +1,7 @@
 div.item {
     background-color: #eee;
     display: block;
-    margin: 1em auto;
+    margin: 0 auto;
     width: 500px;
 
     background: #fff;
@@ -11,4 +11,3 @@ div.item {
     -webkit-box-sizing: border-box;
     box-shadow: 2px 2px 4px 0 #ccc;
 }
-

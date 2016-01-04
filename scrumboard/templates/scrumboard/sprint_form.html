@@ -1,9 +1,9 @@
 {% extends 'scrumboard/base.html' %}
 
-{% block head_title %}{% if sprint.id %}Update{% else %}Create{% endif %} Sprint{% endblock %}
+{% block head_title %}Sprint {% if sprint.pk %}{{ sprint.name }} Update{% else %}Create{% endif %}{% endblock %}
 
 {% block content %}
-        <form action="{% if sprint.id %}{% url 'scrumboard:sprint_update' pk=sprint.id %}{% else %}{% url 'scrumboard:sprint_create' %}{% endif %}" method="POST">
+        <form action="{% if sprint.pk %}{% url 'scrumboard:sprint_update' sprint.pk %}{% else %}{% url 'scrumboard:sprint_create' %}{% endif %}" method="POST">
             {% csrf_token %}
             <table>
                 {{ form.as_table }}

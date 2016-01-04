@@ -28,6 +28,10 @@ LOCAL_APPS = [
     'scrumboard',
 ]
 
+THIRD_PARTY_APPS = [
+    'bootstrap3',
+]
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -35,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-] + LOCAL_APPS
+] + LOCAL_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
@@ -108,6 +112,7 @@ USE_TZ = True
 
 # URL of the login page.
 LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/scrumboard/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
@@ -135,3 +140,12 @@ else:
     MEDIA_ROOT = bagile.secret.MEDIA_ROOT
 
 ALLOWED_HOSTS = bagile.secret.ALLOWED_HOSTS
+
+
+BOOTSTRAP3 = {
+    # The URL to the jQuery JavaScript file
+    'jquery_url': 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js',
+
+    # The Bootstrap base URL
+    'base_url': 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/',
+}

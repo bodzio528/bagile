@@ -1,20 +1,45 @@
 {% extends 'scrumboard/base.html' %}
 
 {% load scrumboard_extras %}
+{% load bootstrap3 %}
 
 {% block head_title %}{% if item.pk %}Update{% else %}Create{% endif %} Item{% endblock %}
 
 {% block rel_stylesheets %}
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/scrumboard/css/item_form.css">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/scrumboard/css/item.css">
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/scrumboard/css/fancy_item.css">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}scrumboard/css/bootstrap3-spinner.css">
+
+    <style>
+        .select2-results__option {
+            white-space: nowrap;
+            width: 100%;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
     <div class="item">
-        <form action="{% if item.pk %}{% url 'scrumboard:item_update' item.pk %}{% else %}{% url 'scrumboard:item_create' %}{% endif %}" method="POST">
-        {% csrf_token %}
-        {% fancy_item_form form %}
-            <input type="submit" value="Submit" style="margin-top: 1em; width:100%;">
+        <form class="form" method="POST" action="{% if item.pk %}{% url 'scrumboard:item_update' item.pk %}{% else %}{% url 'scrumboard:item_create' %}{% endif %}">
+            <fieldset hidden>
+                {% csrf_token %}
+            </fieldset>
+            {% fancy_item_form form %}
+            <fieldset class="row">
+                <div class="col-xs-6 form-group">
+                    <button type="submit" class="btn btn-success btn-block">
+                        {% bootstrap_icon 'ok' %} Submit
+                    </button>
+                </div>
+                <div class="col-xs-6">
+                    <a role="button" class="btn btn-danger btn-block" href="{% url 'scrumboard:item_delete' item.pk %}">
+                        {% bootstrap_icon 'trash' %} Delete
+                    </a>
+                </div>
+            </fieldset>
         </form>
     </div>
+
+    <script src="{{ STATIC_URL }}scrumboard/js/bootstrap3-spinner.js"></script>
 {% endblock %}
+

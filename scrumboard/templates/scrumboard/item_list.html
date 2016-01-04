@@ -1,5 +1,7 @@
 {% extends 'scrumboard/base.html' %}
 
+{% load scrumboard_extras %}
+
 {% block head_title %}Item List{% endblock %}
 
 {% block content %}
@@ -10,20 +12,27 @@
                     <th>Name</th>
                     <th>Description</th>
                     <th>Status</th>
+                    <th>Sprint</th>
                     <th>Assignee</th>
                     <th>Edit</th>
                 </tr>
             </thead>
-            <tbody>
-        {% for item in all_items %}
+            <tfoot>
                 <tr>
-                    <td><a href="{% url 'scrumboard:item_details' item.pk %}">{{ item.name }}</a></td>
+                    <td colspan="6">Total: {{ all_items|length }}</td>
+                </tr>
+            </tfoot>
+            <tbody>
+                {% for item in all_items %}
+                <tr>
+                    <td>{{ item.name }}</td>
                     <td>{{ item.description }}</td>
                     <td>{{ item.get_status_display }}</td>
-                    <td>{{ item.assignee }}<a href="#">[view profile]</a></td>
-                    <td><a href="{% url 'scrumboard:item_update' item.pk %}">[edit]</a></td>
+                    <td>{% if item.sprint %}{% sprint_url item.sprint %}{% endif %}</td>
+                    <td>{% if item.assignee %}{{ item.assignee }}{{ item.assignee.username}}{% endif %}</td>
+                    <td>{% item_url item text="[edit]" %}</td>
                 </tr>
-        {% endfor %}
+                {% endfor %}
             </tbody>
         </table>
 {% endblock %}

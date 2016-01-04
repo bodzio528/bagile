@@ -1,4 +1,6 @@
-    <div class="item-container">
+{% load scrumboard_extras %}
+
+    <div id="id_item-{{ item.pk }}" class="item-container">
         <div class="item-header">
             <div class="item-name fancy-item-colour">
                 <div class="item-name-value">{{ item.name }}</div>
@@ -15,16 +17,22 @@
         <div class="item-description">{{ item.description }}</div>
         <div class="item-footer">
             <div class="item-status">
-                <div class="item-status-label"></div>
+                <div class="item-status-label">Status:</div>
                 <div class="item-status-value">{{ item.get_status_display }}</div>
             </div>
             <div class="item-assignee">
-                <div class="item-assignee-label">Assigned</div>
+                <div class="item-assignee-label">Assignee:</div>
                 <div class="item-assignee-value"><a href="#">{{ item.assignee }}</a></div>
             </div>
             <div class="item-sprint">
-                <div class="item-sprint-label">Sprint</div>
-                <div class="item-sprint-value"><a href="{% url 'scrumboard:sprint_details' item.sprint.pk %}">{{ item.sprint.name }}</a></div>
+                <div class="item-sprint-label">Sprint:</div>
+                <div class="item-sprint-value">
+                    {% if item.sprint %}
+                        {% sprint_url item.sprint %}
+                    {% else %}
+                        ---
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>

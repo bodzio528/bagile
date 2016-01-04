@@ -1,10 +1,10 @@
 {% extends 'scrumboard/base.html' %}
 
-{% block head_title %}Sprint Deleted{% endblock %}
+{% block head_title %}Sprint {{ sprint.name }} Delete{% endblock %}
 
 {% block content %}
     <h1>Sprint delete</h1>
-    <form action="{% url 'scrumboard:sprint_delete' pk=sprint.id %}" method="POST">
+    <form action="{% url 'scrumboard:sprint_delete' sprint.pk %}" method="POST">
         {% csrf_token %}
         <p>Do you really want to delete sprint {{ sprint.name }}?</p>
         <input type="submit" value="YES!">

@@ -1,0 +1,33 @@
+{% load scrumboard_extras %}
+{% load bootstrap3 %}
+
+<fieldset hidden>
+    {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+    {% endfor %}
+</fieldset>
+<fieldset class="row">
+    {% bootstrap_field form.name form_group_class='col-xs-6 form-group' %}
+    <div class="col-xs-3">
+        {% bootstrap_label content='Est' %}
+        {% bootstrap_spinner form.estimate_work %}
+    </div>
+
+    <div class="col-xs-3">
+        {% bootstrap_label content='Rev' %}
+        {% bootstrap_spinner form.estimate_review %}
+    </div>
+</fieldset>
+<fieldset class="row">
+    {% bootstrap_field form.description show_label=False form_group_class='col-xs-12 form-group' %}
+</fieldset>
+<fieldset class="row">
+    {% if form.sprint.is_hidden %}
+        {% bootstrap_field form.status   form_group_class='col-xs-6 form-group' %}
+        {% bootstrap_field form.assignee form_group_class='col-xs-6 form-group' %}
+    {% else %}
+        {% bootstrap_field form.status   form_group_class='col-xs-4 form-group' %}
+        {% bootstrap_field form.assignee form_group_class='col-xs-4 form-group' %}
+        {% bootstrap_field form.sprint   form_group_class='col-xs-4 form-group' %}
+    {% endif %}
+</fieldset>

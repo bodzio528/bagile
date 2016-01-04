@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView
@@ -7,6 +8,12 @@ from django.views.generic.list import ListView
 from extra_views import InlineFormSetView
 
 from scrumboard.models import Item, Sprint
+
+
+class LoginRequiredMixin(object):
+    @classmethod
+    def as_view(cls):
+        return login_required(super(LoginRequiredMixin, cls).as_view())
 
 
 class ScrumboardView(TemplateView):
@@ -73,7 +80,7 @@ class ItemDetailView(DetailView):
     model = Item
 
 
-class ItemCreateView(CreateView):
+class ItemCreateView(LoginRequiredMixin, CreateView):
     """
     Create new Item instance in separate form.
     """
@@ -81,7 +88,7 @@ class ItemCreateView(CreateView):
     fields = '__all__'
 
 
-class ItemUpdateView(UpdateView):
+class ItemUpdateView(LoginRequiredMixin, UpdateView):
     """
     Update Item instance in separate form.
     """
@@ -92,7 +99,7 @@ class ItemUpdateView(UpdateView):
         return Item.objects.get(id=self.kwargs['pk'])
 
 
-class ItemDeleteView(DeleteView):
+class ItemDeleteView(LoginRequiredMixin, DeleteView):
     """
     Item delete
     @get:   display confirmation
@@ -148,7 +155,7 @@ class SprintDeleteView(DeleteView):
         return Sprint.objects.get(id=self.kwargs['pk'])
 
 
-class SprintPlanningView(InlineFormSetView):
+class SprintPlanningView(LoginRequiredMixin, InlineFormSetView):
     """
     SprintPlanning a form to add new items to existing sprint.
 
@@ -156,7 +163,8 @@ class SprintPlanningView(InlineFormSetView):
     """
     model = Sprint
     inline_model = Item
-    # context_object_name = 'sprint'
+    can_delete = True
+    context_object_name = 'sprint'
     template_name = 'scrumboard/sprint_planning.html'
 
     def get_object(self):

@@ -1,16 +1,33 @@
 {% extends 'scrumboard/base.html' %}
 
 {% load scrumboard_extras %}
+{% load bootstrap3 %}
 
 {% block head_title %}Item Details{% endblock %}
 
 {% block rel_stylesheets %}
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/scrumboard/css/item_detail.css">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/scrumboard/css/item.css">
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/scrumboard/css/fancy_item.css">
 {% endblock %}
 
 {% block content %}
-    <div class="item">
-        {% fancy_item_detail item %}
+    <div class="item container">
+        <div class="row">
+            <div class="col-xs-12">
+                {% fancy_item_detail item %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-6">
+                <a role="button" class="btn btn-secondary btn-block" href="{% url 'scrumboard:item_update' item.pk %}">
+                {% bootstrap_icon 'pencil' %} Update
+                </a>
+            </div>
+            <div class="col-xs-6">
+                <a role="button" class="btn btn-danger btn-block" href="{% url 'scrumboard:item_delete' item.pk %}">
+                {% bootstrap_icon 'trash' %} Delete
+                </a>
+            </div>
+        </div>
     </div>
 {% endblock %}

@@ -4,6 +4,7 @@
 
 {% block content %}
     <h1>Item delete</h1>
+    <h2>This should be rewritten to alert box</h2>
     <form action="{% url 'scrumboard:item_delete' item.pk %}" method="POST">
         {% csrf_token %}
         <p>Do you really want to delete item {{ item.name }}?</p>

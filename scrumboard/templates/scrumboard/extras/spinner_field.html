@@ -1,0 +1,15 @@
+{% load bootstrap3 %}
+
+<div class="input-group spinner">
+    <!--input id="{{ field.id }}" type="text" class='form-control' value="{{ field.value }}"-->
+    {{ field.as_widget }}
+    <div class="input-group-btn-vertical">
+        <button class="btn btn-default btn-sm" type="button">
+            {% bootstrap_icon 'chevron-up' %}
+        </button>
+        <button class="btn btn-default btn-sm" type="button">
+            {% bootstrap_icon 'chevron-down' %}
+        </button>
+    </div>
+    {#% bootstrap_field form.estimate_work show_label=False form_group_class='' %#} {# field_class='' #}
+</div>

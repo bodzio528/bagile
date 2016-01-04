@@ -1,6 +1,7 @@
 /*** CONTAINER ***/
 div.item-container {
     border: 1px solid black;
+    margin-bottom: 1em;
 }
 
 /*** HEADER ***/
@@ -25,6 +26,10 @@ div.item-name-label {
 div.item-name-value {
 }
 
+div.item-name-value input {
+    width: 95%;
+}
+
 /* ESTIMATE WORK CELL */
 div.item-estimate-work {
     border-width: 0 1px 0 0;
@@ -39,7 +44,11 @@ div.item-estimate-work-label {
     border-style: solid;
 }
 
-div.item-estimate-work.value {
+div.item-estimate-work-value {
+}
+
+div.item-estimate-work-value input {
+    width: 95%;
 }
 
 /* ESTIMATE REVIEW CELL */
@@ -56,11 +65,19 @@ div.item-estimate-review-label {
 div.item-estimate-review-value {
 }
 
+div.item-estimate-review-value input {
+    width: 95%;
+}
+
 /*** DESCRIPTION ***/
 div.item-description {
     min-height: 3em;
     text-align: center;
     margin: 1em 0;
+}
+
+div.item-description textarea {
+    width: 95%;
 }
 
 /*** FOOTER ***/
@@ -77,11 +94,13 @@ div.item-status {
 }
 
 div.item-status-label {
-    display: inline;
 }
 
 div.item-status-value {
-    display: inline;
+}
+
+div.item-status-value select {
+    width: 95%;
 }
 
 /* ASSIGNEE CELL */
@@ -90,11 +109,13 @@ div.item-assignee {
 }
 
 div.item-assignee-label {
-    display: inline;
 }
 
 div.item-assignee-value {
-    display: inline;
+}
+
+div.item-assignee-value select {
+    width: 95%;
 }
 
 /* SPRINT CELL */
@@ -103,11 +124,13 @@ div.item-sprint {
 }
 
 div.item-sprint-label {
-    display: inline;
 }
 
 div.item-sprint-value {
-    display: inline;
+}
+
+div.item-sprint-value select {
+    width: 95%;
 }
 
 .fancy-item-colour {

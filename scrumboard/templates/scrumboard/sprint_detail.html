@@ -1,12 +1,14 @@
 {% extends 'scrumboard/base.html' %}
 
-{% block head_title %}Sprint Details{% endblock %}
+{% block head_title %}Sprint {{ sprint.name }} Details{% endblock %}
 
 {% block content %}
-    <h1>Sprint details ({{ sprint.id }})</h1>
+    <h1>Sprint details</h1>
     <table>
         <thead>
-            <th>Name</th><th>{{ sprint.name }}</th>
+            <tr>
+                <th>Name</th><th>{{ sprint.name }}</th>
+            </tr>
         </thead>
         <tbody>
             <tr>

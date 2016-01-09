@@ -19,7 +19,7 @@ class SprintTestCase(TestCase):
             end_date=end_date
         )
 
-        self.assertEqual(str(sprint), '{0}: {1}/{2}'.format(name, start_date, end_date))
+        self.assertEqual(str(sprint), '{0}'.format(name))
 
 
 class IsActiveSprintTestCase(TestCase):

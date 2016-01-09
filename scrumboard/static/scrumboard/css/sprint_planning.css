@@ -3,14 +3,9 @@
     margin: 1em auto;
 
     background: #fff;
-    padding: 0 1em 0 0;
+    padding: 1em 1em 0 1em;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-shadow: 2px 2px 4px 0 #ccc;
-}
-
-.item-control {
-    margin-top: 25px;
-    padding: 0;
 }

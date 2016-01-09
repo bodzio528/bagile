@@ -9,13 +9,13 @@
 <fieldset class="row">
     {% bootstrap_field form.name form_group_class='col-xs-6 form-group' %}
     <div class="col-xs-3">
-        {% bootstrap_label content='Est' %}
-        {% bootstrap_spinner form.estimate_work %}
+        {% bootstrap_label content='Est' label_for=form.estimate_work.auto_id %}
+        {% bootstrap_field form.estimate_work show_label=False %}
     </div>
 
     <div class="col-xs-3">
-        {% bootstrap_label content='Rev' %}
-        {% bootstrap_spinner form.estimate_review %}
+        {% bootstrap_label content='Rev' label_for=form.estimate_review.auto_id %}
+        {% bootstrap_field form.estimate_review show_label=False %}
     </div>
 </fieldset>
 <fieldset class="row">

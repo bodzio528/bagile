@@ -7,7 +7,6 @@
 
 {% block rel_stylesheets %}
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}scrumboard/css/sprint_planning.css">
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}scrumboard/css/bootstrap3-spinner.css">
 
     <style>
         .form-group label {
@@ -46,25 +45,9 @@
             <div class="row">
             {% for form in formset %}
                 <div class="col-xs-12 col-sm-6 col-lg-4">
-                    <div class="row item-container">
-                        <div class="col-xs-10 col-sm-11">
-                            {% fancy_item_form form %}
-                        </div>
-                        <div class="form-group btn-group-vertical col-xs-2 col-sm-1 item-control" data-toggle="buttons">
-                            <label class="btn btn-default btn-block" for="{{ form.prefix}}-move-left">
-                                <input id="{{ form.prefix}}-move-left" name="{{ form.prefix }}-{{ form.DELETE.name }}" type=checkbox>
-                                {% bootstrap_icon 'arrow-right' %}
-                            </label>
-                            <label class="btn btn-default btn-block" for="{{ form.prefix}}-move-right">
-                                <input id="{{ form.prefix}}-move-right" name="{{ form.prefix }}-{{ form.DELETE.name }}" type=checkbox>
-                                {% bootstrap_icon 'arrow-left' %}
-                            </label>
-                            <label class="btn btn-danger btn-block" for="{{ form.DELETE.auto_id }}">
-                                <input id="{{ form.DELETE.auto_id }}" name="{{ form.prefix }}-{{ form.DELETE.name }}" type=checkbox>
-                                {% bootstrap_icon 'trash' %}
-                            </label>
-                        </div>
-                    </div>
+                    <fieldset  class="item-container">
+                        {% fancy_item_form form %}
+                    </fieldset>
                 </div>
             {% endfor %}
             </div>
@@ -75,6 +58,4 @@
             {% endbuttons %}
         </form>
     </div>
-
-    <script src="{{ STATIC_URL }}scrumboard/js/bootstrap3-spinner.js"></script>
 {% endblock %}

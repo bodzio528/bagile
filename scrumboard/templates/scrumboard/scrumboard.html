@@ -31,7 +31,7 @@
                 <table class="table-bordered">
                     <thead>
                         <tr>
-                            <th class="col-xs-1">SPRINT {% sprint_url sprint %}</th>
+                            <th class="col-xs-1">SPRINT {% scrumboard_sprint_url sprint %}</th>
                             <th class="col-xs-1">WIP</th>
                             <th class="col-xs-1">RDY</th>
                             <th class="col-xs-1">REV</th>
@@ -54,14 +54,14 @@
                             <td class="col-xs-2" rowspan="{{ assignment|length }}">
                                 <div class="row">
                                 {% for item in unassigned_items.COMMITTED %}
-                                    {% item_detail_short item %}
+                                    {% scrumboard_item_short item %}
                                 {% endfor %}
                                 </div>
                             </td>
                             <td class="col-xs-2" rowspan="{{ assignment|length }}">
                                 <div class="row">
                                 {% for item in unassigned_items.DONE %}
-                                    {% item_detail_short item %}
+                                    {% scrumboard_item_short item %}
                                 {% endfor %}
                                 </div>
                             </td>
@@ -74,42 +74,42 @@
                             <td class="col-xs-1">
                                 <div class="row">
                                 {% for item in assignment.status.WIP %}
-                                    {% item_detail_short item %}
+                                    {% scrumboard_item_short item %}
                                 {% endfor %}
                                 </div>
                             </td>
                             <td class="col-xs-1">
                                 <div class="row">
                                 {% for item in assignment.status.RDY %}
-                                    {% item_detail_short item %}
+                                    {% scrumboard_item_short item %}
                                 {% endfor %}
                                 </div>
                             </td>
                             <td class="col-xs-1">
                                 <div class="row">
                                 {% for item in assignment.status.REV %}
-                                    {% item_detail_short item %}
+                                    {% scrumboard_item_short item %}
                                 {% endfor %}
                                 </div>
                             </td>
                             <td class="col-xs-1">
                                 <div class="row">
                                 {% for item in assignment.status.FIX %}
-                                    {% item_detail_short item %}
+                                    {% scrumboard_item_short item %}
                                 {% endfor %}
                                 </div>
                             </td>
                             <td class="col-xs-1">
                                 <div class="row">
                                 {% for item in assignment.status.EXT %}
-                                    {% item_detail_short item %}
+                                    {% scrumboard_item_short item %}
                                 {% endfor %}
                                 </div>
                             </td>
                             <td class="col-xs-1">
                                 <div class="row">
                                 {% for item in assignment.status.BLK %}
-                                    {% item_detail_short item %}
+                                    {% scrumboard_item_short item %}
                                 {% endfor %}
                                 </div>
                             </td>

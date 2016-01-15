@@ -30,7 +30,7 @@
                     <td>{{ item.get_status_display }}</td>
                     <td>{% if item.sprint %}{% sprint_url item.sprint %}{% endif %}</td>
                     <td>{% if item.assignee %}{{ item.assignee.username}}{% endif %}</td>
-                    <td>{% item_url item text="[edit]" %}</td>
+                    <td>{% scrumboard_item_url item text="[edit]" %}</td>
                 </tr>
                 {% endfor %}
             </tbody>

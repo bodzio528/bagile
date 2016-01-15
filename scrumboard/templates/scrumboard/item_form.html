@@ -7,7 +7,6 @@
 
 {% block rel_stylesheets %}
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/scrumboard/css/item.css">
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/scrumboard/css/fancy_item.css">
 
     <style>
         .select2-results__option {
@@ -28,17 +27,19 @@
             <fieldset hidden>
                 {% csrf_token %}
             </fieldset>
-            {% fancy_item_form form %}
+            {% scrumboard_item_form form %}
             <fieldset class="row">
-                <div class="col-xs-6 form-group">
-                    <button type="submit" class="btn btn-success btn-block">
-                        {% bootstrap_icon 'ok' %} Submit
-                    </button>
-                </div>
-                <div class="col-xs-6">
-                    <a role="button" class="btn btn-danger btn-block" href="{% url 'scrumboard:item_delete' item.pk %}">
-                        {% bootstrap_icon 'trash' %} Delete
-                    </a>
+                <div class="col-xs-12 form-group btn-group btn-group-justified">
+                    <div class="btn-group">
+                        {% bootstrap_button "Save" icon='ok' button_type='submit' button_class='btn-success' %}
+                    </div>
+                    <div class="btn-group">
+                        {% bootstrap_button "Back" icon='triangle-left' button_type='link' href='#' button_class='btn-secondary' %}
+                    </div>
+                    <div class="btn-group">
+                        {% url 'scrumboard:item_delete' item.pk as item_delete_url %}
+                        {% bootstrap_button "Delete" icon='trash' button_type='link' button_class='btn-danger' href=item_delete_url %}
+                    </div>
                 </div>
             </fieldset>
         </form>

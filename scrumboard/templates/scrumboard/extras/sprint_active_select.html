@@ -1,0 +1,26 @@
+{% load bootstrap3 %}
+<form class="navbar-form" role="form" action="{% url 'scrumboard:sprint_current' %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ current_url }}">
+    <fieldset class="form-group">
+        <div style="width: 200px;" class="input-group select2-bootstrap-append select2-bootstrap-prepend">
+            <span class="input-group-addon">
+                <label for="id_select_current_sprint" class="control-label sr-only">Current Sprint</label>
+                Sprint:
+            </span>
+            <select id="id_select_current_sprint" class="form-control select2" name="current_sprint_pk" data-minimum-results-for-search="-1">
+                {% for sprint in active_sprints %}
+                <option value="{{ sprint.id }}" {% if sprint.id == current_sprint.id %}selected{% endif %}>{{ sprint.name }}</option>
+                {% endfor %}
+            </select>
+            <span class="input-group-btn">
+                {% bootstrap_button "" icon="arrow-right" button_type="submit" button_class="btn btn-success" %}
+            </span>
+        </div>
+    </fieldset>
+    <script>
+        $('#id_select_current_sprint').change(function() {
+            $(this).closest('form').submit();
+        });
+    </script>
+</form>

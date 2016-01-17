@@ -1,7 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic import TemplateView
+from django.forms import model_to_dict
+from django.http import JsonResponse, Http404
+from django.views.generic import TemplateView, View
+from django.views.generic.base import ContextMixin
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
@@ -16,7 +19,15 @@ class LoginRequiredMixin(object):
         return login_required(super(LoginRequiredMixin, cls).as_view())
 
 
-class ScrumboardView(TemplateView):
+class SessionCurrentSprintMixin(object):
+    def get_current_sprint(self):
+        if 'current_sprint_pk' in self.request.session:
+            return Sprint.objects.get(id=self.request.session['current_sprint_pk'])
+        else:
+            return Sprint.get_current_sprint()
+
+
+class ScrumboardView(SessionCurrentSprintMixin, TemplateView):
     """
     This View will combine current sprint scrumboard with data like charts, statistics.
     """
@@ -27,7 +38,7 @@ class ScrumboardView(TemplateView):
 
         developers = User.objects.filter(groups__name='developers')
 
-        current_sprint = Sprint.get_current_sprint()  # TODO: from session by default
+        current_sprint = self.get_current_sprint()  #Sprint.get_current_sprint()  # TODO: from session by default
 
         assigned_items_in_current_sprint = Item.objects.filter(
                 sprint=current_sprint
@@ -51,15 +62,17 @@ class ScrumboardView(TemplateView):
             }
 
         assigned_items = [select_items_for_user(assigned_items_in_current_sprint, user) for user in developers]
+
+        unassigned_items_in_current_sprint = Item.objects.filter(sprint=current_sprint)
         unassigned_items = {
-            'COMMITTED': Item.objects.filter(status=Item.COMMITTED),
-            'DONE': Item.objects.filter(status=Item.DONE)
+            'COMMITTED': unassigned_items_in_current_sprint.filter(status=Item.COMMITTED),
+            'DONE': unassigned_items_in_current_sprint.filter(status=Item.DONE)
         }
 
         context.update(
             sprint=current_sprint,
             assigned_items=assigned_items,
-            unassigned_items=unassigned_items
+            unassigned_items=unassigned_items,
         )
 
         return context
@@ -170,7 +183,33 @@ class SprintPlanningView(LoginRequiredMixin, InlineFormSetView):
     def get_object(self):
         if 'pk' in self.kwargs:
             return Sprint.objects.get(id=self.kwargs['pk'])
-        elif 'current_sprint' in self.request.session:
-            return self.request.session['current_sprint']
+        elif 'current_sprint_pk' in self.request.session:
+            return Sprint.objects.get(id=self.request.session['current_sprint_pk'])
         else:
             return Sprint.get_current_sprint()
+
+
+class SprintCurrentView(LoginRequiredMixin, View):
+    def get(self, request):
+        from django.http import JsonResponse
+
+        if 'current_sprint_pk' in request.session:
+            current_sprint = Sprint.objects.get(pk=request.session['current_sprint_pk'])
+            return JsonResponse({'current_sprint': model_to_dict(current_sprint)})
+        raise Http404  # render selection of sprints
+
+    def post(self, request):
+        if 'current_sprint_pk' in request.POST:
+            current_sprint = Sprint.objects.get(pk=request.POST['current_sprint_pk'])
+            request.session['current_sprint_pk'] = current_sprint.pk
+            if 'next' in request.POST:
+                from django.shortcuts import redirect
+                return redirect(request.POST['next'])
+        raise Http404
+
+
+class SprintActiveView(View):
+    def get(self, request):
+        from django.http import JsonResponse
+        active_sprints = [model_to_dict(sprint, fields=['id', 'name']) for sprint in Sprint.objects.all()]
+        return JsonResponse(active_sprints, safe=False)

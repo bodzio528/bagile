@@ -18,6 +18,8 @@ urlpatterns = [
         ])),
     ])),
     url(r'^sprint/', include([
+        url(r'^active/$', SprintActiveView.as_view(), name='sprint_active'),
+        url(r'^current/$', SprintCurrentView.as_view(), name='sprint_current'),
         url(r'^create/$', SprintCreateView.as_view(), name='sprint_create'),
         url(r'^planning/$', SprintPlanningView.as_view(), name='current_sprint_planning'),
         url(r'^(?P<pk>[0-9]+)/', include([

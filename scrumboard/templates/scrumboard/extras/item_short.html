@@ -1,13 +1,14 @@
 {% load scrumboard_extras %}
 
-<div class="col-xs-6 item-box">
-    <div class="row">
-        <span class="col-xs-6">E:{{ item.estimate_work }}</span>
-        <span class="col-xs-6">R:{{ item.estimate_review }}</span>
+<li class="scrumboard-item">
+    <div class="scrumboard-item-box">
+        <div class="scrumboard-item-header" {% style_background_color item.color %}>
+            <span class="scrumboard-item-header-name"><a title="{{ item.name }}" href="{% url 'scrumboard:item_details' item.pk %}">{{ item.name }}</a></span>
+            <span title="Work Estimate" class="scrumboard-item-header-estimate-work">E{{ item.estimate_work }}</span>
+            <span title="Review Estimate"class="scrumboard-item-header-estimate-review">R{{ item.estimate_review }}</span>
+        </div>
+        <div class="scrumboard-item-description">
+            <p title="{{ item.description }}">{{ item.description }}</p>
+        </div>
     </div>
-    <div class="row">
-        <span class="col-xs-12">
-            <a data-toggle="popover" data-trigger="hover" title="{{ item.name }}" data-content="{{ item.description }}" href="{% url 'scrumboard:item_details' item.pk %}">{{ item.name }}</a>
-        </span>
-    </div>
-</div>
+</li>

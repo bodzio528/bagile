@@ -1,22 +1,12 @@
 {% extends 'scrumboard/base.html' %}
 
+{% load staticfiles %}
 {% load scrumboard_extras %}
 
 {% block head_title %}Scrumboard for Sprint {{ sprint.name }}{% endblock %}
 
 {% block rel_stylesheets %}
-    <style>
-        .item-box {
-            margin: 5px;
-            border: 1px solid black;
-            height: 42px;
-            width: 140px;
-        }
-
-        .popover {
-            width: 350px;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'scrumboard/css/scrumboard.css' %}">
 
     <script type="text/javascript">
         $(document).ready(function(){
@@ -26,97 +16,89 @@
 {% endblock %}
 
 {% block content %}
-        <div class="container-fluid">
-            <div class="table-responsive">
-                <table class="table-bordered">
-                    <thead>
-                        <tr>
-                            <th class="col-xs-1">SPRINT {% scrumboard_sprint_url sprint %}</th>
-                            <th class="col-xs-1">WIP</th>
-                            <th class="col-xs-1">RDY</th>
-                            <th class="col-xs-1">REV</th>
-                            <th class="col-xs-1">FIX</th>
-                            <th class="col-xs-1">EXT</th>
-                            <th class="col-xs-1">BLK</th>
-                            <th class="col-xs-2">COMMITTED</th>
-                            <th class="col-xs-2">DONE</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="col-xs-1"></td>
-                            <td class="col-xs-1"></td>
-                            <td class="col-xs-1"></td>
-                            <td class="col-xs-1"></td>
-                            <td class="col-xs-1"></td>
-                            <td class="col-xs-1"></td>
-                            <td class="col-xs-1"></td>
-                            <td class="col-xs-2" rowspan="{{ assignment|length }}">
-                                <div class="row">
+        <div class="container-fluid table-responsive">
+            <table class="table-bordered" width="100%">
+                <thead>
+                    <tr>
+                        <td class="scrumboard-column-user">SPRINT {% scrumboard_sprint_url sprint %}</td>
+                        <th class="scrumboard-column-assigned">WIP</th>
+                        <th class="scrumboard-column-assigned">RDY</th>
+                        <th class="scrumboard-column-assigned">REV</th>
+                        <th class="scrumboard-column-assigned">FIX</th>
+                        <th class="scrumboard-column-assigned">EXT</th>
+                        <th class="scrumboard-column-assigned">BLK</th>
+                        <th class="scrumboard-column-unassigned">COMMITTED</th>
+                        <th class="scrumboard-column-unassigned">DONE</th>
+                    </tr>
+                </thead>
+                <tfoot></tfoot>
+                <tbody>
+                    {% for assignment in assigned_items %}
+                    <tr class="scrumboard-row">
+                        <th>
+                            <a href="{{ assignment.user.pk }}">{{ assignment.user.username }}</a>
+                        </th>
+                        <td>
+                            <ul class="scrumboard-item-list">
+                            {% for item in assignment.status.WIP %}
+                                {% scrumboard_item_short item %}
+                            {% endfor %}
+                            </ul>
+                        </td>
+                        <td>
+                            <ul class="scrumboard-item-list">
+                            {% for item in assignment.status.RDY %}
+                                {% scrumboard_item_short item %}
+                            {% endfor %}
+                            </ul>
+                        </td>
+                        <td>
+                            <ul class="scrumboard-item-list">
+                            {% for item in assignment.status.REV %}
+                                {% scrumboard_item_short item %}
+                            {% endfor %}
+                            </ul>
+                        </td>
+                        <td>
+                            <ul class="scrumboard-item-list">
+                            {% for item in assignment.status.FIX %}
+                                {% scrumboard_item_short item %}
+                            {% endfor %}
+                            </ul>
+                        </td>
+                        <td>
+                            <ul class="scrumboard-item-list">
+                            {% for item in assignment.status.EXT %}
+                                {% scrumboard_item_short item %}
+                            {% endfor %}
+                            </ul>
+                        </td>
+                        <td>
+                            <ul class="scrumboard-item-list">
+                            {% for item in assignment.status.BLK %}
+                                {% scrumboard_item_short item %}
+                            {% endfor %}
+                            </ul>
+                        </td>
+                        {% if forloop.first %}
+                            <td rowspan="{{ assignment_list|length }}">
+                                <ul class="scrumboard-item-list">
                                 {% for item in unassigned_items.COMMITTED %}
                                     {% scrumboard_item_short item %}
                                 {% endfor %}
-                                </div>
+                                </ul>
                             </td>
-                            <td class="col-xs-2" rowspan="{{ assignment|length }}">
-                                <div class="row">
+                            <td rowspan="{{ assignment_list|length }}">
+                                <ul class="scrumboard-item-list">
                                 {% for item in unassigned_items.DONE %}
                                     {% scrumboard_item_short item %}
                                 {% endfor %}
-                                </div>
+                                </ul>
                             </td>
-                        </tr>
-                        {% for assignment in assigned_items %}
-                        <tr style="height: 150px;">
-                            <td class="col-xs-1">
-                                <a href="{{ assignment.user.pk }}">{{ assignment.user.username }}</a>
-                            </td>
-                            <td class="col-xs-1">
-                                <div class="row">
-                                {% for item in assignment.status.WIP %}
-                                    {% scrumboard_item_short item %}
-                                {% endfor %}
-                                </div>
-                            </td>
-                            <td class="col-xs-1">
-                                <div class="row">
-                                {% for item in assignment.status.RDY %}
-                                    {% scrumboard_item_short item %}
-                                {% endfor %}
-                                </div>
-                            </td>
-                            <td class="col-xs-1">
-                                <div class="row">
-                                {% for item in assignment.status.REV %}
-                                    {% scrumboard_item_short item %}
-                                {% endfor %}
-                                </div>
-                            </td>
-                            <td class="col-xs-1">
-                                <div class="row">
-                                {% for item in assignment.status.FIX %}
-                                    {% scrumboard_item_short item %}
-                                {% endfor %}
-                                </div>
-                            </td>
-                            <td class="col-xs-1">
-                                <div class="row">
-                                {% for item in assignment.status.EXT %}
-                                    {% scrumboard_item_short item %}
-                                {% endfor %}
-                                </div>
-                            </td>
-                            <td class="col-xs-1">
-                                <div class="row">
-                                {% for item in assignment.status.BLK %}
-                                    {% scrumboard_item_short item %}
-                                {% endfor %}
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
 {% endblock %}

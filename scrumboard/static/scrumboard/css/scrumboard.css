@@ -1,0 +1,71 @@
+.scrumboard-item-list {
+    list-style: none;
+    margin: 0;
+    padding: 5px 0 0 5px;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+}
+.scrumboard-item {
+    text-decoration: none;
+    display: block;
+    padding: 0;
+    margin: 0 5px 5px 0 ; /* magic */
+}
+.scrumboard-item-box {
+    width: 20ex;
+    height: 7ex;
+    border: 1px solid black;
+    background-color: #FFFFCC;
+}
+.scrumboard-item-header {
+    border-width: 0 0 1px 0;
+    border-style: solid;
+    border-color: black;
+    display: flex;
+    flex-flow: row nowrap;
+    align-content: stretch;
+    width:100%;
+}
+.scrumboard-item-header-name {
+    display:block;
+    width: 13ex;
+}
+.scrumboard-item-header-name > a {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: "*";
+}
+.scrumboard-item-header-estimate-work {
+    border-width: 0 0 0 1px;
+    border-style: solid;
+    border-color: black;
+    width: 4ex;
+}
+.scrumboard-item-header-estimate-review {
+    border-width: 0 0 0 1px;
+    border-style: solid;
+    border-color: black;
+    width: 3ex;
+}
+.scrumboard-item-description > p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+.scrumboard-column-user {
+    width: 8%
+}
+.scrumboard-column-assigned {
+    width: 10.3333%;
+}
+.scrumboard-column-unassigned {
+    width: 15%;
+}
+
+.scrumboard-row {
+    height: 20ex;
+}

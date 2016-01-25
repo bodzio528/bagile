@@ -45,3 +45,8 @@ def scrumboard_sprint_active_select(context):
 
     return {'active_sprints': active_sprints, 'current_sprint': model_to_dict(current_sprint), 'current_url': context.request.get_full_path()}
 
+
+@register.simple_tag
+def style_background_color(color):
+    from django.utils.safestring import mark_safe
+    return mark_safe('style="background-color: {0}"'.format(color))

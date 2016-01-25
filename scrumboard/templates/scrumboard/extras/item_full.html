@@ -2,15 +2,15 @@
 
     <div id="id_item-{{ item.pk }}" class="item-container">
         <div class="item-header">
-            <div class="item-name fancy-item-colour">
+            <div class="item-name" {% style_background_color item.color %}>
                 <div class="item-name-value">{{ item.name }}</div>
             </div>
             <div class="item-estimate-work">
-                <div class="item-estimate-work-label fancy-item-colour">Est:</div>
+                <div class="item-estimate-work-label" {% style_background_color item.color %}>Est:</div>
                 <div class="item-estimate-work-value">{{ item.estimate_work }}</div>
             </div>
             <div class="item-estimate-review">
-                <div class="item-estimate-review-label fancy-item-colour">Rev:</div>
+                <div class="item-estimate-review-label" {% style_background_color item.color %}>Rev:</div>
                 <div class="item-estimate-review-value">{{ item.estimate_review }}</div>
             </div>
         </div>

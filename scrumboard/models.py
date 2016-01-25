@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
 
+from colorfield.fields import ColorField
 
 # SPRINT
 # +-------------------------------------+
@@ -68,19 +69,15 @@ class Item(models.Model):
 
     name = models.CharField(
         max_length=63,
-        blank=True,
     )
     description = models.TextField(
         max_length=255,
-        blank=True,
     )
     estimate_work = models.PositiveIntegerField(
         default=0,
-        blank=True
     )
     estimate_review = models.PositiveIntegerField(
         default=0,
-        blank=True
     )
     status = models.IntegerField(
         choices=(
@@ -94,8 +91,8 @@ class Item(models.Model):
             (DONE, 'Done'),
         ),
         default=COMMITTED,
-        blank=False,
     )
+    color = ColorField(default='#96CFFF')
     assignee = models.ForeignKey(
         User,
         models.SET_NULL,

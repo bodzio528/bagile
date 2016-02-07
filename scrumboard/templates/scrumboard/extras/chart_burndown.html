@@ -1,0 +1,64 @@
+{% load scrumboard_extras%}
+
+<h2>TEST Burndown chart for sprint {% scrumboard_sprint_url sprint %} -- FAKE DATA</h2>
+<canvas id="id_chart_burndown"></canvas>
+<script>
+    Chart.defaults.global.elements.line.tension = 0;
+
+    var data = {
+        labels: ["2015-01-01", "2015-01-02", "2015-01-03", "2015-01-04", "2015-01-05", "2015-01-06", "2015-01-07",
+                 "2015-01-08", "2015-01-09", "2015-01-10", "2015-01-11", "2015-01-12", "2015-01-13", "2015-01-14"],
+        datasets: [
+            {
+                label: "Burndown",
+                backgroundColor: "rgba(0,255,255,0.2)",
+                borderColor: "rgba(0,0,128,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "rgba(0,0,128,1)",
+                pointBackgroundColor: "rgba(0,255,255,1)",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "rgba(0,255,255,1)",
+                pointHoverBorderColor: "rgba(0,0,128,1)",
+                pointHoverBorderWidth: 2,
+                data: [90, 90, 80, 75, 69, 62, 50]
+            },
+            {
+                label: "Prognosis",
+                backgroundColor: "rgba(0,0,0,0)",
+                borderColor: "rgba(255,0,0,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "rgba(128,0,0,1)",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "rgba(255,0,0,1)",
+                pointHoverBorderColor: "rgba(128,0,0,1)",
+                pointHoverBorderWidth: 2,
+                data: [(14-1)*90/14, (14-2)*90/14, (14-3)*90/14, (14-4)*90/14, (14-5)*90/14, (14-6)*90/14, (14-7)*90/14,
+                       (14-8)*90/14, (14-9)*90/14, (14-10)*90/14, (14-11)*90/14, (14-12)*90/14, (14-13)*90/14, (14-14)*90/14]
+            }
+        ]
+    };
+
+    var ctx = document.getElementById("id_chart_burndown").getContext("2d");
+    var myLineChart = new Chart(ctx, {
+        type: 'line',
+        data: data,
+        options: {
+            scales : {
+                yAxes : [{type: "linear", id: "y-axis-1",
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+</script>

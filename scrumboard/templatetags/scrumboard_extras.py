@@ -50,3 +50,8 @@ def scrumboard_sprint_active_select(context):
 def style_background_color(color):
     from django.utils.safestring import mark_safe
     return mark_safe('style="background-color: {0}"'.format(color))
+
+
+@register.inclusion_tag('scrumboard/extras/chart_burndown.html')
+def scrumboard_chart_burndown(sprint):
+    return {'sprint': sprint}

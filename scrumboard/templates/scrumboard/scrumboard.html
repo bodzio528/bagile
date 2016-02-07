@@ -13,10 +13,14 @@
             $('[data-toggle="popover"]').popover();
         });
     </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.0.0-beta2/Chart.min.js"></script>
 {% endblock %}
 
 {% block content %}
-        <div class="container-fluid table-responsive">
+    <div class="container-fluid">
+        <div class="table-responsive">
             <table class="table-bordered" width="100%">
                 <thead>
                     <tr>
@@ -31,7 +35,6 @@
                         <th class="scrumboard-column-unassigned">DONE</th>
                     </tr>
                 </thead>
-                <tfoot></tfoot>
                 <tbody>
                     {% for assignment in assigned_items %}
                     <tr class="scrumboard-row">
@@ -101,4 +104,10 @@
                 </tbody>
             </table>
         </div>
+        <div class="row">
+            <div class="col-xs-6">
+                {% scrumboard_chart_burndown sprint %}
+            </div>
+        </div>
+    </div>
 {% endblock %}

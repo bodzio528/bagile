@@ -25,37 +25,101 @@
         .form-control {
             padding: 5px;
         }
+
+        .form {
+            margin-bottom:75px;
+        }
+
+        .navbar-right {
+            margin-right: 0px;
+        }
+        .form-repaint-btn {
+            width: 200px;
+        }
+
+        #id_item_set_empty_form {
+            display: none;
+        }
     </style>
     <script type="text/javascript">
+        var updateTotalFormCount = function() {
+            $('#id_{{ formset.prefix }}-TOTAL_FORMS').val({{ formset.initial_form_count }});
+        }
+
+        var addMore = function() {
+            var totalForms = '#id_{{ formset.prefix }}-TOTAL_FORMS';
+
+            var formIdx = $(totalForms).val();
+            $('#form_set').append($('#id_item_set_empty_form').html().replace(/__prefix__/g, formIdx));
+
+            $('#id_item_set-' + formIdx + '-color').val($('#id_repaint_all_items').val());
+
+            initSelect2('#id_{{ formset.prefix }}-' + formIdx + ' select');
+
+            $(totalForms).val(parseInt(formIdx) + 1);
+        };
+
+        var repaintAll = function() {
+            var color = $('#id_repaint_all_items').val();
+            $('input[type=color]').val(color);
+        }
+
         $(document).ready(function() {
-            $('select').select2({
-                width: 'resolve'
-            });
+            updateTotalFormCount();
         });
     </script>
 {% endblock %}
 
 {% block content %}
+
     <div class="container-fluid">
         <form role="form" class="form" method="POST" action="{% url 'scrumboard:sprint_planning' sprint.pk %}">
             <fieldset hidden>
                 {% csrf_token %}
                 {{ formset.management_form }}
             </fieldset>
-            <div class="row">
+            <div id="form_set" class="row">
             {% for form in formset %}
                 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                    <div class="item-container">
+                    <div id='id_{{ form.prefix }}' class="item-container">
                         {% scrumboard_item_form form %}
                     </div>
                 </div>
             {% endfor %}
             </div>
-            {% buttons %}
-            <button type="submit" class="btn btn-primary btn-block">
-                {% bootstrap_icon "star" %} Submit
-            </button>
-            {% endbuttons %}
+            <div id="id_item_set_empty_form">
+                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                    <div id="id_{{ formset.empty_form.prefix }}" class="item-container">
+                        {% scrumboard_item_form formset.empty_form %}
+                    </div>
+                </div>
+            </div>
+            <nav class="navbar navbar-default navbar-fixed-bottom">
+                <div class="container-fluid">
+                    <fieldset class="form-group">
+                        <button type="button" class="btn btn-success navbar-btn" onclick="addMore()">
+                            {% bootstrap_icon "plus" %} Add More
+                        </button>
+                        <button type="submit" class="btn btn-primary navbar-btn">
+                            {% bootstrap_icon "star" %} Submit
+                        </button>
+                        <div class="navbar-right">
+                            <div class="form-repaint-btn input-group navbar-btn">
+                                <span class="input-group-addon">
+                                    <label for="id_repaint_all_items" class="control-label sr-only">Repaint all items</label>
+                                    Color
+                                </span>
+                                <input type="color" id="id_repaint_all_items" class="form-control" name="repaint_all_items" value="#96CFFF">
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" onclick="repaintAll()">
+                                        {% bootstrap_icon "pencil" %} Repaint
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </nav>
         </form>
     </div>
 {% endblock %}

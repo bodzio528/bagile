@@ -176,9 +176,13 @@ class SprintPlanningView(LoginRequiredMixin, InlineFormSetView):
     """
     model = Sprint
     inline_model = Item
-    can_delete = True
     context_object_name = 'sprint'
     template_name = 'scrumboard/sprint_planning.html'
+
+    extra = 0
+    max_num = 20
+    can_delete = True
+    can_order = False
 
     def get_object(self):
         if 'pk' in self.kwargs:

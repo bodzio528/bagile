@@ -3,7 +3,7 @@
     {% csrf_token %}
     <input type="hidden" name="next" value="{{ current_url }}">
     <fieldset class="form-group">
-        <div style="width: 200px;" class="input-group select2-bootstrap-append select2-bootstrap-prepend">
+        <div class="select-current-sprint-btn input-group select2-bootstrap-append select2-bootstrap-prepend">
             <span class="input-group-addon">
                 <label for="id_select_current_sprint" class="control-label sr-only">Current Sprint</label>
                 Sprint:
@@ -14,7 +14,7 @@
                 {% endfor %}
             </select>
             <span class="input-group-btn">
-                {% bootstrap_button "" icon="arrow-right" button_type="submit" button_class="btn btn-success" %}
+                {% bootstrap_button "" icon="refresh" button_type="submit" button_class="btn btn-success" %}
             </span>
         </div>
     </fieldset>

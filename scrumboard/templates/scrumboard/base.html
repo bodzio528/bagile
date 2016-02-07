@@ -18,14 +18,25 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
 
+        <style>
+            .select-current-sprint-btn {
+                width: 200px;
+            }
+        </style>
+
         {% block rel_stylesheets %}{% endblock %}
 
         <script>
-            $(function(){
-                $('select').select2({
+            var initSelect2 = function(selector) {
+                $(selector).select2({
                     theme: "bootstrap",
+                    width: 'resolve',
                     minimumResultsForSearch: 20
                 });
+            };
+
+            $(function(){
+                initSelect2('select:visible');
             });
         </script>
     </head>
@@ -49,7 +60,6 @@
                     </ul>
                     {% scrumboard_sprint_active_select %}
                 </div>
-
             </div>
         </nav>
         {% block content %}

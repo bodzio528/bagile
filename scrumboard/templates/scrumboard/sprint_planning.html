@@ -1,12 +1,14 @@
 {% extends 'scrumboard/base.html' %}
 
+{% load staticfiles %}
 {% load scrumboard_extras %}
 {% load bootstrap3 %}
 
 {% block head_title %}Sprint {{ sprint.name }} Planning{% endblock %}
 
 {% block rel_stylesheets %}
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}scrumboard/css/sprint_planning.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'scrumboard/css/sprint_planning.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'scrumboard/css/colorful-input-addons.css' %}">
 
     <style>
         .form-group label {
@@ -26,15 +28,8 @@
             padding: 5px;
         }
 
-        .form {
-            margin-bottom:75px;
-        }
-
         .navbar-right {
             margin-right: 0px;
-        }
-        .form-repaint-btn {
-            width: 200px;
         }
 
         #id_item_set_empty_form {
@@ -53,6 +48,7 @@
             $('#form_set').append($('#id_item_set_empty_form').html().replace(/__prefix__/g, formIdx));
 
             $('#id_item_set-' + formIdx + '-color').val($('#id_repaint_all_items').val());
+            $('#id_item_set-' + formIdx + '-name').val($('#id_rename_all_items').val());
 
             initSelect2('#id_{{ formset.prefix }}-' + formIdx + ' select');
 
@@ -62,6 +58,11 @@
         var repaintAll = function() {
             var color = $('#id_repaint_all_items').val();
             $('input[type=color]').val(color);
+        }
+
+        var renameAll = function() {
+            var name = $('#id_rename_all_items').val();
+            $('input[placeholder=Name]').val(name);
         }
 
         $(document).ready(function() {
@@ -96,25 +97,48 @@
             </div>
             <nav class="navbar navbar-default navbar-fixed-bottom">
                 <div class="container-fluid">
-                    <fieldset class="form-group">
-                        <button type="button" class="btn btn-success navbar-btn" onclick="addMore()">
-                            {% bootstrap_icon "plus" %} Add More
-                        </button>
-                        <button type="submit" class="btn btn-primary navbar-btn">
-                            {% bootstrap_icon "star" %} Submit
-                        </button>
-                        <div class="navbar-right">
-                            <div class="form-repaint-btn input-group navbar-btn">
+                    <fieldset class="form-group row">
+                        <div class="btn-group col-sm-12 col-md-3 col-lg-6">
+                            <button type="button" class="btn btn-success navbar-btn" onclick="addMore()">
+                                {% bootstrap_icon "plus" %} Add More
+                            </button>
+                            <button type="submit" class="btn btn-primary navbar-btn">
+                                {% bootstrap_icon "send" %} Submit
+                            </button>
+                        </div>
+                        <div class="col-sm-4 col-md-3 col-lg-2">
+                            <div class="form-total-estimate input-group navbar-btn">
                                 <span class="input-group-addon">
-                                    <label for="id_repaint_all_items" class="control-label sr-only">Repaint all items</label>
-                                    Color
+                                    <label for="id_rename_all_items" class="control-label">Name:</label>
+                                </span>
+                                <input type="text" id="id_rename_all_items" name="rename_all_items" class="form-control" placeholder="Name">
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" onclick="renameAll()">
+                                        {% bootstrap_icon "pencil" %}
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 col-md-3 col-lg-2">
+                            <div class="input-group navbar-btn">
+                                <span class="input-group-addon">
+                                    <label for="id_repaint_all_items" class="control-label">Color:</label>
                                 </span>
                                 <input type="color" id="id_repaint_all_items" class="form-control" name="repaint_all_items" value="#96CFFF">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-default" onclick="repaintAll()">
-                                        {% bootstrap_icon "pencil" %} Repaint
+                                        {% bootstrap_icon "tint" %}
                                     </button>
                                 </span>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 col-md-3 col-lg-2">
+                            <div class="form-total-estimate input-group navbar-btn">
+                                <span class="input-group-addon">
+                                    <label for="id_total_estimate" class="control-label">Estimate:</label>
+                                </span>
+                                <input type="text" id="id_total_estimate" name="total_estimate" class="form-control" value="{{ estimate_total }}" readonly>
+                                <span class="input-group-addon {% if estimate_total > sprint.capacity %}danger{% endif %}">/{{ sprint.capacity }}</span>
                             </div>
                         </div>
                     </fieldset>

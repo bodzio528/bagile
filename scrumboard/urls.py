@@ -19,10 +19,12 @@ urlpatterns = [
     ])),
     url(r'^sprint/', include([
         url(r'^active/$', SprintActiveView.as_view(), name='sprint_active'),
+        url(r'^burndown/$', SprintBurndownChartView.as_view(), name='sprint_current_burndown_chart'),
         url(r'^current/$', SprintCurrentView.as_view(), name='sprint_current'),
         url(r'^create/$', SprintCreateView.as_view(), name='sprint_create'),
-        url(r'^planning/$', SprintPlanningView.as_view(), name='current_sprint_planning'),
+        url(r'^planning/$', SprintPlanningView.as_view(), name='sprint_current_planning'),
         url(r'^(?P<pk>[0-9]+)/', include([
+            url(r'^burndown/$', SprintBurndownChartView.as_view(), name='sprint_burndown_chart'),
             url(r'^details/$', SprintDetailView.as_view(), name='sprint_details'),
             url(r'^update/$', SprintUpdateView.as_view(), name='sprint_update'),
             url(r'^delete/$', SprintDeleteView.as_view(), name='sprint_delete'),

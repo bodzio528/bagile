@@ -21,7 +21,9 @@ class LoginRequiredMixin(object):
 
 class SessionCurrentSprintMixin(object):
     def get_current_sprint(self):
-        if 'current_sprint_pk' in self.request.session:
+        if 'pk' in self.kwargs:
+            return Sprint.objects.get(id=self.kwargs['pk'])
+        elif 'current_sprint_pk' in self.request.session:
             return Sprint.objects.get(id=self.request.session['current_sprint_pk'])
         else:
             return Sprint.get_current_sprint()
@@ -38,7 +40,7 @@ class ScrumboardView(SessionCurrentSprintMixin, TemplateView):
 
         developers = User.objects.filter(groups__name='developers')
 
-        current_sprint = self.get_current_sprint()  #Sprint.get_current_sprint()  # TODO: from session by default
+        current_sprint = self.get_current_sprint()
 
         assigned_items_in_current_sprint = Item.objects.filter(
                 sprint=current_sprint
@@ -125,7 +127,7 @@ class ItemDeleteView(LoginRequiredMixin, DeleteView):
         return Item.objects.get(id=self.kwargs['pk'])
 
 
-class SprintCreateView(CreateView):
+class SprintCreateView(LoginRequiredMixin, CreateView):
     """
     Create Sprint as non admin user.
     """
@@ -133,7 +135,7 @@ class SprintCreateView(CreateView):
     fields = '__all__'
 
 
-class SprintUpdateView(UpdateView):
+class SprintUpdateView(LoginRequiredMixin, UpdateView):
     """
     Update Sprint data.
     """
@@ -144,7 +146,7 @@ class SprintUpdateView(UpdateView):
         return Sprint.objects.get(id=self.kwargs['pk'])
 
 
-class SprintDetailView(DetailView):
+class SprintDetailView(LoginRequiredMixin, DetailView):
     """
     Detailed information about the Sprint.
     """
@@ -155,7 +157,7 @@ class SprintDetailView(DetailView):
         return Sprint.objects.get(id=self.kwargs['pk'])
 
 
-class SprintDeleteView(DeleteView):
+class SprintDeleteView(LoginRequiredMixin, DeleteView):
     """
     Sprint delete
     @get:   display confirmation
@@ -184,6 +186,20 @@ class SprintPlanningView(LoginRequiredMixin, InlineFormSetView):
     can_delete = True
     can_order = False
 
+    def get_context_data(self, **kwargs):
+        context = super(SprintPlanningView, self).get_context_data(**kwargs)
+
+        estimate_total = 0
+
+        items = Item.objects.filter(sprint=self.get_object())
+
+        for item in items:
+            estimate_total += item.estimate_review + item.estimate_work
+
+        context.update(estimate_total=estimate_total)
+
+        return context
+
     def get_object(self):
         if 'pk' in self.kwargs:
             return Sprint.objects.get(id=self.kwargs['pk'])
@@ -195,12 +211,17 @@ class SprintPlanningView(LoginRequiredMixin, InlineFormSetView):
 
 class SprintCurrentView(LoginRequiredMixin, View):
     def get(self, request):
-        from django.http import JsonResponse
+        current_sprint = Sprint.get_current_sprint()
 
         if 'current_sprint_pk' in request.session:
-            current_sprint = Sprint.objects.get(pk=request.session['current_sprint_pk'])
-            return JsonResponse({'current_sprint': model_to_dict(current_sprint)})
-        raise Http404  # render selection of sprints
+            session_sprint = Sprint.objects.get(pk=request.session['current_sprint_pk'])
+            if session_sprint in Sprint.get_active_sprints():
+                current_sprint = session_sprint
+            else:
+                request.session['current_sprint_pk'] = current_sprint.pk
+
+        from django.http import JsonResponse
+        return JsonResponse({'current_sprint': model_to_dict(current_sprint)})
 
     def post(self, request):
         if 'current_sprint_pk' in request.POST:
@@ -215,5 +236,16 @@ class SprintCurrentView(LoginRequiredMixin, View):
 class SprintActiveView(View):
     def get(self, request):
         from django.http import JsonResponse
-        active_sprints = [model_to_dict(sprint, fields=['id', 'name']) for sprint in Sprint.objects.all()]
+        active_sprints = [model_to_dict(sprint, fields=['id', 'name']) for sprint in Sprint.get_active_sprints()]
         return JsonResponse(active_sprints, safe=False)
+
+
+class SprintBurndownChartView(SessionCurrentSprintMixin, TemplateView):
+    template_name = 'scrumboard/sprint_burndown_chart.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(SprintBurndownChartView, self).get_context_data(**kwargs)
+
+        context.update(sprint=self.get_current_sprint())
+
+        return context

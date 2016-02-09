@@ -19,8 +19,12 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
 
         <style>
+            body {
+                padding-bottom: 70px; /* bottom navbar */
+            }
+
             .select-current-sprint-btn {
-                width: 200px;
+                width: 275px;
             }
         </style>
 
@@ -55,10 +59,15 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         <li>
-                            <a href="{% url 'scrumboard:current_sprint_planning' %}">Planning</a>
+                            <a href="{% url 'scrumboard:sprint_current_planning' %}">Planning</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'scrumboard:sprint_current_burndown_chart' %}">Burndown</a>
+                        </li>
+                        <li>
+                            {% scrumboard_sprint_active_select %}
                         </li>
                     </ul>
-                    {% scrumboard_sprint_active_select %}
                 </div>
             </div>
         </nav>

@@ -1,12 +1,13 @@
 {% extends 'scrumboard/base.html' %}
 
+{% load staticfiles %}
 {% load scrumboard_extras %}
 {% load bootstrap3 %}
 
 {% block head_title %}{% if item.pk %}Update{% else %}Create{% endif %} Item{% endblock %}
 
 {% block rel_stylesheets %}
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/scrumboard/css/item.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'scrumboard/css/item.css' %}">
 
     <style>
         .select2-results__option {
@@ -24,16 +25,24 @@
             </fieldset>
             {% scrumboard_item_form form %}
             <fieldset class="row">
-                <div class="col-xs-12 form-group btn-group btn-group-justified">
-                    <div class="btn-group">
-                        {% bootstrap_button "Save" icon='ok' button_type='submit' button_class='btn-success' %}
-                    </div>
-                    <div class="btn-group">
-                        {% bootstrap_button "Back" icon='triangle-left' button_type='link' href='#' button_class='btn-secondary' %}
-                    </div>
-                    <div class="btn-group">
-                        {% url 'scrumboard:item_delete' item.pk as item_delete_url %}
-                        {% bootstrap_button "Delete" icon='trash' button_type='link' button_class='btn-danger' href=item_delete_url %}
+                {% bootstrap_field form.status   form_group_class='col-xs-4 form-group' %}
+                {% bootstrap_field form.assignee form_group_class='col-xs-3 form-group' %}
+                {% bootstrap_field form.sprint   form_group_class='col-xs-3 form-group' %}
+                {% bootstrap_field form.color form_group_class='col-xs-2 form-group' %}
+            </fieldset>
+            <fieldset class="row">
+                <div class="col-xs-12">
+                    <div class="form-group btn-group btn-group-justified">
+                        <div class="btn-group">
+                            {% bootstrap_button "Save" icon='ok' button_type='submit' button_class='btn-success' %}
+                        </div>
+                        <div class="btn-group">
+                            {% bootstrap_button "Back" icon='triangle-left' button_type='link' href='#' button_class='btn-secondary' %}
+                        </div>
+                        <div class="btn-group">
+                            {% url 'scrumboard:item_delete' item.pk as item_delete_url %}
+                            {% bootstrap_button "Delete" icon='trash' button_type='link' button_class='btn-danger' href=item_delete_url %}
+                        </div>
                     </div>
                 </div>
             </fieldset>

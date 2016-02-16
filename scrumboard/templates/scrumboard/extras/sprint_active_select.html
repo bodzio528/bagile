@@ -7,19 +7,15 @@
             <span class="input-group-addon">
                 <label for="id_select_current_sprint" class="control-label">Current Sprint:</label>
             </span>
-            <select id="id_select_current_sprint" class="form-control select2" name="current_sprint_pk" data-minimum-results-for-search="-1">
+            <select id="id_select_current_sprint" class="form-control select2" name="current_sprint_pk" data-minimum-results-for-search="-1" onchange="this.form.submit()">
                 {% for sprint in active_sprints %}
                 <option value="{{ sprint.id }}" {% if sprint.id == current_sprint.id %}selected{% endif %}>{{ sprint.name }}</option>
                 {% endfor %}
             </select>
             <span class="input-group-btn">
+                <a class="btn btn-default" href="{% url 'scrumboard:sprint_update' current_sprint.id %}">{% bootstrap_icon "pencil" %}</a>
                 {% bootstrap_button "" icon="refresh" button_type="submit" button_class="btn btn-success" %}
             </span>
         </div>
     </fieldset>
-    <script>
-        $('#id_select_current_sprint').change(function() {
-            $(this).closest('form').submit();
-        });
-    </script>
 </form>

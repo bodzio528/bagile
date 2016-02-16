@@ -21,14 +21,3 @@
 <fieldset class="row">
     {% bootstrap_field form.description show_label=False form_group_class='col-xs-12 form-group' %}
 </fieldset>
-<fieldset class="row">
-    {% if form.sprint.is_hidden %}
-        {% bootstrap_field form.status   form_group_class='col-xs-5 form-group' %}
-        {% bootstrap_field form.assignee form_group_class='col-xs-5 form-group' %}
-    {% else %}
-        {% bootstrap_field form.status   form_group_class='col-xs-4 form-group' %}
-        {% bootstrap_field form.assignee form_group_class='col-xs-3 form-group' %}
-        {% bootstrap_field form.sprint   form_group_class='col-xs-3 form-group' %}
-    {% endif %}
-    {% bootstrap_field form.color form_group_class='col-xs-2 form-group' %}
-</fieldset>

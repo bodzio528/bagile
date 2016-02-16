@@ -1,4 +1,5 @@
 {% load bootstrap3 %}
+
 <form class="navbar-form" role="form" action="{% url 'scrumboard:sprint_current' %}" method="post">
     {% csrf_token %}
     <input type="hidden" name="next" value="{{ current_url }}">

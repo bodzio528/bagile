@@ -131,6 +131,10 @@ def user_directory_path(instance, filename):
     return 'user_{0}/{1}'.format(instance.user.id, filename)
 
 
+class EstimateChangeEvent(models.Model):
+    pass
+
+
 class UserProfile(models.Model):
     user = models.ForeignKey(
         User,

@@ -1,9 +1,12 @@
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django.utils import timezone
 
 from colorfield.fields import ColorField
+
 
 # SPRINT
 # +-------------------------------------+
@@ -55,7 +58,7 @@ class Sprint(models.Model):
 # |            DESCRIPTION              |
 # |                        HERE         |
 # +-------------------------------------+
-# |                     Assigned User   |
+# | Status | Sprint |   Assigned User   |
 # +-------------------------------------+
 class Item(models.Model):
     COMMITTED = 1
@@ -117,6 +120,15 @@ class Item(models.Model):
         return reverse('scrumboard:item_details', kwargs={'pk': self.pk})
 
 
+@receiver(pre_save, sender=Item)
+def create_estimate_change_event(sender, instance, **kwargs):
+    # TODO: write this functionality
+    Event.objects.create(
+        sprint=instance.sprint,
+        change=Event.INC,
+        value=5
+    )
+
 # +--------+--------------------------------------------------+--------------+
 # | SPRINT | WIP | RDY | REV | FIX | EXT | BLK |  COMMITTED   |     DONE     |
 # +--------+-----------------------------------+--------------+--------------+
@@ -126,6 +138,54 @@ class Item(models.Model):
 # +--------+-----------------------------------+              |              |
 # |  IMG 3 |            [it]                   |   [item]     | [item]       |
 # +--------+-----------------------------------+--------------+--------------+
+# +---------------+
+# |Burndown Chart |
+# |o              |
+# |  o            |
+# |      o o      |
+# |          o    |
+# |            o o|
+# |M T W T F M T W|
+# +---------------+
+
+
+# SCRUMBOARD EVENT
+# +--------+------------+--------+-------+
+# | Sprint | Date       | Change | Value |
+# +--------+------------+--------+-------+
+# |  254.3 | 2016-03-20 |    INC |     3 |
+# +--------+------------+--------+-------+
+# |  254.3 | 2016-03-20 |    DEC |     4 |
+# +--------+------------+--------+-------+
+class Event(models.Model):
+    INC = 1
+    DEC = -1
+
+    sprint = models.ForeignKey(
+            Sprint,
+            on_delete=models.CASCADE,
+            blank=False,
+            null=False)
+    date = models.DateField(
+            auto_now=True
+    )
+    change = models.SmallIntegerField(
+        choices=(
+            (INC, "Estimate Increased"),
+            (DEC, "Estimate Decreased"),
+        ),
+        default=INC
+    )
+    value = models.PositiveSmallIntegerField(
+        blank=False,
+        default=0
+    )
+
+    @staticmethod
+    def get_events(sprint):
+        return Event.objects.filter(sprint=sprint)
+
+
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
     return 'user_{0}/{1}'.format(instance.user.id, filename)
@@ -147,3 +207,4 @@ class UserProfile(models.Model):
 
     def get_absolute_url(self):
         return reverse('scrumboard:user_details', kwargs={'pk': self.pk})
+

@@ -1,3 +1,4 @@
+import datetime
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -88,7 +89,7 @@ class Item(models.Model):
             (WIP, 'Work In Progress'),
             (PENDING_REVIEW, 'Ready to Review'),
             (REVIEW, 'Under Review'),
-            (FIX, "Fix"),
+            (FIX, 'Fix'),
             (EXTERNAL_REVIEW, 'External Review'),
             (BLOCKED, 'Blocked'),
             (DONE, 'Done'),
@@ -155,24 +156,24 @@ def create_estimate_change_event(sender, instance, **kwargs):
 # +--------+------------+--------+-------+
 # |  254.3 | 2016-03-20 |    INC |     3 |
 # +--------+------------+--------+-------+
-# |  254.3 | 2016-03-20 |    DEC |     4 |
+# |  254.3 | 2016-03-20 |    DEC |     5 |
 # +--------+------------+--------+-------+
 class Event(models.Model):
     INC = 1
     DEC = -1
 
     sprint = models.ForeignKey(
-            Sprint,
-            on_delete=models.CASCADE,
-            blank=False,
-            null=False)
+        Sprint,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=False)
     date = models.DateField(
-            auto_now=True
+        default=timezone.datetime.today
     )
     change = models.SmallIntegerField(
         choices=(
-            (INC, "Estimate Increased"),
-            (DEC, "Estimate Decreased"),
+            (INC, 'Estimate Increased'),
+            (DEC, 'Estimate Decreased'),
         ),
         default=INC
     )
@@ -184,6 +185,32 @@ class Event(models.Model):
     @staticmethod
     def get_events(sprint):
         return Event.objects.filter(sprint=sprint)
+
+    @staticmethod
+    def get_events_timetable(sprint):
+        from collections import defaultdict
+
+        timetable = defaultdict(set)
+        for event in Event.get_events(sprint):
+            timetable[str(event.date)].add(event)
+
+        return timetable
+
+    def __str__(self):
+        return '{2}{3} {1} ({0})'.format(
+                self.sprint,
+                self.date,
+                '-' if self.change == Event.DEC else '',
+                self.value)
+
+    def __int__(self):
+        return self.value * self.change
+
+    def __add__(self, other):
+        return int(self) + int(other)
+
+    def __radd__(self, other):
+        return other + self.value * self.change
 
 
 def user_directory_path(instance, filename):

@@ -245,7 +245,5 @@ class SprintBurndownChartView(SessionCurrentSprintMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(SprintBurndownChartView, self).get_context_data(**kwargs)
-
         context.update(sprint=self.get_current_sprint())
-
         return context

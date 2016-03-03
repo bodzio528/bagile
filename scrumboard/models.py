@@ -121,15 +121,6 @@ class Item(models.Model):
         return reverse('scrumboard:item_details', kwargs={'pk': self.pk})
 
 
-@receiver(pre_save, sender=Item)
-def create_estimate_change_event(sender, instance, **kwargs):
-    # TODO: write this functionality
-    Event.objects.create(
-        sprint=instance.sprint,
-        change=Event.INC,
-        value=5
-    )
-
 # +--------+--------------------------------------------------+--------------+
 # | SPRINT | WIP | RDY | REV | FIX | EXT | BLK |  COMMITTED   |     DONE     |
 # +--------+-----------------------------------+--------------+--------------+
@@ -211,6 +202,16 @@ class Event(models.Model):
 
     def __radd__(self, other):
         return other + self.value * self.change
+
+
+@receiver(pre_save, sender=Item)
+def create_estimate_change_event(sender, instance, **kwargs):
+    # TODO: write this functionality
+    Event.objects.create(
+        sprint=instance.sprint,
+        change=Event.INC,
+        value=5
+    )
 
 
 def user_directory_path(instance, filename):

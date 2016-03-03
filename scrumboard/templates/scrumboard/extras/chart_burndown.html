@@ -9,7 +9,7 @@
         labels: {{ labels|safe }},
         datasets: [
             {
-                label: "Burndown",
+                label: "Actual",
                 backgroundColor: "rgba(0,255,255,0.2)",
                 borderColor: "rgba(0,0,128,1)",
                 borderCapStyle: 'butt',
@@ -26,7 +26,7 @@
                 data: {{ dataset_burndown|safe }}
             },
             {
-                label: "Prognosis",
+                label: "Ideal",
                 backgroundColor: "rgba(0,0,0,0)",
                 borderColor: "rgba(255,0,0,1)",
                 borderCapStyle: 'butt',

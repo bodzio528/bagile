@@ -1,4 +1,5 @@
 import datetime
+from unittest.mock import patch
 
 from django.test import TestCase
 
@@ -10,7 +11,8 @@ class ItemChangeEventTestCase(TestCase):
         self.today = datetime.date(2016, 3, 4)
         self.tomorrow = datetime.date(2016, 3, 5)
 
-    def test_item_create_calls_create_event(self):
+    @patch('scrumboard.models.Event.create_item_created_event')
+    def test_item_create_calls_item_created_event(self, mock_create_event):
         sprint = Sprint.objects.create(
             name='256',
             start_date=self.today,
@@ -25,14 +27,34 @@ class ItemChangeEventTestCase(TestCase):
             sprint=sprint
         )
 
+        mock_create_event.return_value = Event(
+            sprint=sprint,
+            change=Event.INC,
+            value=5
+        )
+
         item.save()
 
-        events = Event.objects.filter(sprint=sprint)
-
-        self.assertEqual(1, len(events))
+        events = Event.get_events(sprint)
+        assert len(events) is 1
 
         event = events[0]
+        self.assertEqual(event.sprint, sprint)
+        self.assertEqual(event.change, Event.INC)
+        self.assertEqual(event.value, 5)
+    #
+    # def test_create_event_for_instance_created_is_connected(self, mock_factory):
+    #     item = Item.objects.create(
+    #         name="asdf",
+    #         sprint=self.sprint,
+    #         estimate_work=5,
+    #         estimate_review=3
+    #     )
 
-        self.assertEqual(sprint, event.sprint)
-        self.assertEqual(Event.INC, event.change)
-        self.assertEqual(item.estimate_work + item.estimate_review, event.value)
+        # assert mock_call
+        #
+        # events = Event.get_events(self.sprint)
+        #
+        # assert len(events) is 1
+        # assert events[0].change is Event.INC
+        # assert events[0].value is 8

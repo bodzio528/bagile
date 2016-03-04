@@ -1,12 +1,10 @@
-import datetime
+from colorfield.fields import ColorField
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from django.utils import timezone
-
-from colorfield.fields import ColorField
 
 
 # SPRINT
@@ -187,6 +185,15 @@ class Event(models.Model):
 
         return timetable
 
+    @staticmethod
+    def create_item_created_event(instance):
+        estimate = instance.estimate_work + instance.estimate_review
+        return Event(
+            sprint=instance.sprint,
+            change=Event.INC,
+            value=estimate
+        )
+
     def __str__(self):
         return '{2}{3} {1} ({0})'.format(
                 self.sprint,
@@ -206,12 +213,14 @@ class Event(models.Model):
 
 @receiver(pre_save, sender=Item)
 def create_estimate_change_event(sender, instance, **kwargs):
-    # TODO: write this functionality
-    Event.objects.create(
-        sprint=instance.sprint,
-        change=Event.INC,
-        value=5
-    )
+    pass
+
+
+@receiver(post_save, sender=Item)
+def create_event_for_item_create(sender, instance, created, **kwargs):
+    if created:
+        event = Event.create_item_created_event(instance)
+        event.save()
 
 
 def user_directory_path(instance, filename):

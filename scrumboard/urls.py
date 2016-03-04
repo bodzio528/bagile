@@ -31,4 +31,9 @@ urlpatterns = [
             url(r'^planning/$', SprintPlanningView.as_view(), name='sprint_planning')
         ])),
     ])),
+    url(r'^team/', include([
+        url(r'^(?P<team_name>\w+)/', include([
+            url(r'^details/', TeamDetailView.as_view(), name='team_details'),
+        ])),
+    ])),
 ]

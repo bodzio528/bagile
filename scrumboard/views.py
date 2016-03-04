@@ -9,7 +9,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from extra_views import InlineFormSetView
 
-from scrumboard.models import Item, Sprint
+from scrumboard.models import Item, Sprint, Team
 
 
 class LoginRequiredMixin(object):
@@ -247,5 +247,19 @@ class SprintBurndownChartView(SessionCurrentSprintMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(SprintBurndownChartView, self).get_context_data(**kwargs)
+        context.update(sprint=self.get_current_sprint())
+        return context
+
+
+class TeamDetailView(SessionCurrentSprintMixin, DetailView):
+    model = Team
+    fields = '__all__'
+    # context_object_name = 'team'
+
+    def get_object(self, queryset=None):
+        return Team.objects.get(name=self.kwargs['team_name'])
+
+    def get_context_data(self, **kwargs):
+        context = super(TeamDetailView, self).get_context_data(**kwargs)
         context.update(sprint=self.get_current_sprint())
         return context

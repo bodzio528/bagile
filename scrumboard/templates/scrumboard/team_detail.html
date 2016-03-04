@@ -1,0 +1,19 @@
+{% extends 'scrumboard/base.html' %}
+
+{% block head_title %}Team {{ team.name }} Details{% endblock %}
+
+{% block content %}
+    <h1>Team {{ team.name }} details</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th><th>{{ team.name }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Capacity: </td><td>{{ sprint.capacity }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

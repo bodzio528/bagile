@@ -5,4 +5,5 @@ from scrumboard.models import *
 admin.site.register(Sprint)
 admin.site.register(Item)
 admin.site.register(Event)
+admin.site.register(Team)
 admin.site.register(UserProfile)

@@ -2,7 +2,7 @@ from colorfield.fields import ColorField
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import pre_save, post_save, pre_delete
 from django.dispatch import receiver
 from django.utils import timezone
 
@@ -194,6 +194,45 @@ class Event(models.Model):
             value=estimate
         )
 
+    @staticmethod
+    def create_item_deleted_event(instance):
+        estimate = instance.estimate_work + instance.estimate_review
+        return Event(
+            sprint=instance.sprint,
+            change=Event.DEC,
+            value=estimate
+        )
+
+    @staticmethod
+    def create_item_changed_events(instance):
+        events = []
+        if instance.pk != 0:
+            old_instance = Item.objects.get(pk=instance.pk)
+
+            if instance.status != old_instance.status:
+                from collections import namedtuple
+                Entry = namedtuple('Entry', ['start', 'end', 'est', 'rev'])
+
+                transition_table = [Entry(Item.WIP, Item.PENDING_REVIEW, Event.DEC, 0), ]
+
+                entry = next((t for t in transition_table if t[0:2] == (old_instance.status, instance.status)), None)
+                if entry is not None:
+                    change = instance.estimate_work * entry.est + instance.estimate_review * entry.rev
+
+                    events += [Event(sprint=instance.sprint,
+                                     change=Event.INC if change > 0 else Event.DEC,
+                                     value=abs(change))]
+
+            if instance.sprint.pk != old_instance.sprint.pk:
+                estimate = instance.estimate_work + instance.estimate_review
+                events += [Event(sprint=instance.sprint,
+                                 change=Event.INC,
+                                 value=estimate),
+                           Event(sprint=old_instance.sprint,
+                                 change=Event.DEC,
+                                 value=estimate)]
+        return events
+
     def __str__(self):
         return '{2}{3} {1} ({0})'.format(
                 self.sprint,
@@ -205,14 +244,18 @@ class Event(models.Model):
         return self.value * self.change
 
     def __add__(self, other):
+        if isinstance(other, Event):
+            assert other.sprint.pk == self.sprint.pk
         return int(self) + int(other)
 
     def __radd__(self, other):
+        if isinstance(other, Event):
+            assert other.sprint.pk == self.sprint.pk
         return other + self.value * self.change
 
 
 @receiver(pre_save, sender=Item)
-def create_estimate_change_event(sender, instance, **kwargs):
+def create_event_for_item_update(sender, instance, **kwargs):
     pass
 
 
@@ -221,6 +264,11 @@ def create_event_for_item_create(sender, instance, created, **kwargs):
     if created:
         event = Event.create_item_created_event(instance)
         event.save()
+
+
+@receiver(pre_delete, sender=Item)
+def create_event_for_item_delete(sender, instance, **kwargs):
+    pass
 
 
 def user_directory_path(instance, filename):

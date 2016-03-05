@@ -27,34 +27,20 @@ class ItemChangeEventTestCase(TestCase):
             sprint=sprint
         )
 
-        mock_create_event.return_value = Event(
+        expected_event = Event(
             sprint=sprint,
             change=Event.INC,
             value=5
         )
 
+        mock_create_event.return_value = expected_event
+
         item.save()
 
         events = Event.get_events(sprint)
-        assert len(events) is 1
+        assert len(events) == 1
 
         event = events[0]
-        self.assertEqual(event.sprint, sprint)
-        self.assertEqual(event.change, Event.INC)
-        self.assertEqual(event.value, 5)
-    #
-    # def test_create_event_for_instance_created_is_connected(self, mock_factory):
-    #     item = Item.objects.create(
-    #         name="asdf",
-    #         sprint=self.sprint,
-    #         estimate_work=5,
-    #         estimate_review=3
-    #     )
-
-        # assert mock_call
-        #
-        # events = Event.get_events(self.sprint)
-        #
-        # assert len(events) is 1
-        # assert events[0].change is Event.INC
-        # assert events[0].value is 8
+        assert event.sprint == expected_event.sprint
+        assert event.change == expected_event.change
+        assert event.value == expected_event.value

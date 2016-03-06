@@ -118,6 +118,8 @@ class Item(models.Model):
     def get_absolute_url(self):
         return reverse('scrumboard:item_details', kwargs={'pk': self.pk})
 
+    def get_full_estimate(self):
+        return self.estimate_work + self.estimate_review
 
 # +--------+--------------------------------------------------+--------------+
 # | SPRINT | WIP | RDY | REV | FIX | EXT | BLK |  COMMITTED   |     DONE     |
@@ -187,51 +189,66 @@ class Event(models.Model):
 
     @staticmethod
     def create_item_created_event(instance):
-        estimate = instance.estimate_work + instance.estimate_review
         return Event(
             sprint=instance.sprint,
             change=Event.INC,
-            value=estimate
+            value=instance.get_full_estimate()
         )
 
     @staticmethod
     def create_item_deleted_event(instance):
-        estimate = instance.estimate_work + instance.estimate_review
         return Event(
             sprint=instance.sprint,
             change=Event.DEC,
-            value=estimate
+            value=instance.get_full_estimate()
         )
 
     @staticmethod
     def create_item_changed_events(instance):
-        events = []
-        if instance.pk != 0:
+        try:
             old_instance = Item.objects.get(pk=instance.pk)
+            events = []
+
+            def add_event_for_change(sprint, diff):
+                if diff != 0:
+                    events.append(Event(sprint=sprint,
+                                        change=Event.INC if diff > 0 else Event.DEC,
+                                        value=abs(diff)))
+
+            group = ({Item.EXTERNAL_REVIEW, Item.DONE},
+                     {Item.PENDING_REVIEW, Item.REVIEW, Item.FIX},
+                     {Item.COMMITTED, Item.WIP, Item.BLOCKED})
+
+            review = (instance.estimate_review - old_instance.estimate_review) if old_instance.status not in group[0] else 0
+            effort = (instance.estimate_work - old_instance.estimate_work) if old_instance.status in group[2] else 0
+
+            add_event_for_change(old_instance.sprint, effort + review)
 
             if instance.status != old_instance.status:
-                from collections import namedtuple
-                Entry = namedtuple('Entry', ['start', 'end', 'est', 'rev'])
+                tt = [(0, 1, 0, Event.INC),
+                      (1, 0, 0, Event.DEC),
+                      (1, 2, Event.INC, 0),
+                      (2, 1, Event.DEC, 0),
+                      (0, 2, Event.INC, Event.INC),
+                      (2, 0, Event.DEC, Event.DEC)]
 
-                transition_table = [Entry(Item.WIP, Item.PENDING_REVIEW, Event.DEC, 0), ]
+                change_expr = next((t for t in tt if old_instance.status in group[t[0]] and instance.status in group[t[1]]), None)
 
-                entry = next((t for t in transition_table if t[0:2] == (old_instance.status, instance.status)), None)
-                if entry is not None:
-                    change = instance.estimate_work * entry.est + instance.estimate_review * entry.rev
-
-                    events += [Event(sprint=instance.sprint,
-                                     change=Event.INC if change > 0 else Event.DEC,
-                                     value=abs(change))]
+                if change_expr is not None:
+                    add_event_for_change(old_instance.sprint,
+                                         change_expr[2] * instance.estimate_work +
+                                         change_expr[3] * instance.estimate_review)
 
             if instance.sprint.pk != old_instance.sprint.pk:
-                estimate = instance.estimate_work + instance.estimate_review
-                events += [Event(sprint=instance.sprint,
-                                 change=Event.INC,
-                                 value=estimate),
-                           Event(sprint=old_instance.sprint,
-                                 change=Event.DEC,
-                                 value=estimate)]
-        return events
+                review = instance.estimate_review if instance.status not in group[0] else 0
+                effort = instance.estimate_work if instance.status in group[2] else 0
+
+                add_event_for_change(instance.sprint, effort + review)
+                add_event_for_change(old_instance.sprint, -(effort + review))
+
+            return events
+        except Item.DoesNotExist:
+            return []
 
     def __str__(self):
         return '{2}{3} {1} ({0})'.format(
@@ -256,19 +273,20 @@ class Event(models.Model):
 
 @receiver(pre_save, sender=Item)
 def create_event_for_item_update(sender, instance, **kwargs):
-    pass
+    events = Event.create_item_changed_events(instance)
+    for event in events:
+        event.save()
 
 
 @receiver(post_save, sender=Item)
 def create_event_for_item_create(sender, instance, created, **kwargs):
     if created:
-        event = Event.create_item_created_event(instance)
-        event.save()
+        Event.create_item_created_event(instance).save()
 
 
 @receiver(pre_delete, sender=Item)
 def create_event_for_item_delete(sender, instance, **kwargs):
-    pass
+    Event.create_item_created_event(instance).save()
 
 
 def user_directory_path(instance, filename):
@@ -292,4 +310,3 @@ class UserProfile(models.Model):
 
     def get_absolute_url(self):
         return reverse('scrumboard:user_details', kwargs={'pk': self.pk})
-

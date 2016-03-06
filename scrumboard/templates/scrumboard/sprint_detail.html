@@ -1,25 +1,56 @@
 {% extends 'scrumboard/base.html' %}
 
+{% load bootstrap3 %}
+
 {% block head_title %}Sprint {{ sprint.name }} Details{% endblock %}
 
+{% block rel_stylesheets %}
+    <style>
+        div.sprint {
+            display: block;
+            margin: 0 auto;
+            width: 500px;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-    <h1>Sprint details</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th><th>{{ sprint.name }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Start Date</td><td>{{ sprint.start_date}}</td>
-            </tr>
-            <tr>
-                <td>End Date</td><td>{{ sprint.end_date}}</td>
-            </tr>
-            <tr>
-                <td>Capacity</td><td>{{ sprint.capacity }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="sprint panel panel-default">
+        <div class="panel-heading">Sprint {{ sprint.name }} details</div>
+        <div class="list-group">
+            <div class="list-group-item">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <b>Duration</b>
+                    </div>
+                    <div class="col-xs-4">
+                        {{ sprint.start_date|date:'Y-m-d' }}
+                    </div>
+                    <div class="col-xs-1">
+                        <b>to</b>
+                    </div>
+                    <div class="col-xs-4">
+                        {{ sprint.end_date|date:'Y-m-d' }}
+                    </div>
+                </div>
+            </div>
+            <div class="list-group-item">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <b>Capacity</b>
+                    </div>
+                    <div class="col-xs-9">
+                        {{ sprint.capacity }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="btn-group btn-group-justified" role="group">
+            <a href="{% url 'scrumboard:sprint_update' sprint.pk as sprint_update_url %}" class="btn btn-primary">
+                {% bootstrap_icon 'pencil' %} Update
+            </a>
+        </div>
+
+            {#% bootstrap_button 'Update' icon='pencil' button_type='link' href=sprint_update_url button_class='list-group-item' %#}
+    </div>
 {% endblock %}

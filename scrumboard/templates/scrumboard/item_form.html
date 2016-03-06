@@ -26,12 +26,12 @@
                 {% scrumboard_item_form form %}
             </div>
             <div class="list-group-item">
-                <div class="row">
+                <fieldset class="row">
                     {% bootstrap_field form.status form_group_class='col-xs-6 form-group' %}
                     {% bootstrap_field form.sprint form_group_class='col-xs-6 form-group' %}
                     {% bootstrap_field form.assignee form_group_class='col-xs-9 form-group' %}
                     {% bootstrap_field form.color form_group_class='col-xs-3 form-group' %}
-                </div>
+                </fieldset>
             </div>
             <div class="list-group-item">
                 <div class="row">

@@ -15,19 +15,19 @@
 {% endblock %}
 
 {% block content %}
-    <div class="sprint panel panel-default">
-        <div class="panel-heading">Sprint {{ sprint.name }} details</div>
+    <div class="sprint panel panel-info">
+        <div class="panel-heading"><strong>Sprint</strong></div>
         <div class="list-group">
             <div class="list-group-item">
                 <div class="row">
                     <div class="col-xs-3">
-                        <b>Duration</b>
+                        <strong>Duration</strong>
                     </div>
                     <div class="col-xs-4">
                         {{ sprint.start_date|date:'Y-m-d' }}
                     </div>
                     <div class="col-xs-1">
-                        <b>to</b>
+                        <em>to</em>
                     </div>
                     <div class="col-xs-4">
                         {{ sprint.end_date|date:'Y-m-d' }}
@@ -37,20 +37,23 @@
             <div class="list-group-item">
                 <div class="row">
                     <div class="col-xs-3">
-                        <b>Capacity</b>
+                        <strong>Capacity</strong>
                     </div>
                     <div class="col-xs-9">
                         {{ sprint.capacity }}
                     </div>
                 </div>
             </div>
+            <div class="list-group-item">
+                <div class="btn-group btn-group-justified" role="group">
+                    <a href="{% url 'scrumboard:sprint_update' sprint.pk %}" class="btn btn-primary">
+                        {% bootstrap_icon 'pencil' %} Update
+                    </a>
+                    <a href="#" class="btn btn-default">
+                        {% bootstrap_icon 'arrow-left' %} Back
+                    </a>
+                </div>
+            </div>
         </div>
-        <div class="btn-group btn-group-justified" role="group">
-            <a href="{% url 'scrumboard:sprint_update' sprint.pk as sprint_update_url %}" class="btn btn-primary">
-                {% bootstrap_icon 'pencil' %} Update
-            </a>
-        </div>
-
-            {#% bootstrap_button 'Update' icon='pencil' button_type='link' href=sprint_update_url button_class='list-group-item' %#}
     </div>
 {% endblock %}

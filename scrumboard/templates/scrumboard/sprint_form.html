@@ -7,17 +7,9 @@
 {% block rel_stylesheets %}
     <style>
         div.sprint {
-            background-color: #eee;
             display: block;
             margin: 0 auto;
             width: 500px;
-
-            background: #fff;
-            padding: 1em;
-            box-sizing: border-box;
-            -moz-box-sizing: border-box;
-            -webkit-box-sizing: border-box;
-            box-shadow: 2px 2px 4px 0 #ccc;
         }
     </style>
 
@@ -35,15 +27,13 @@
 {% endblock %}
 
 {% block content %}
-    <div class="sprint">
-        <form action="{% if sprint.pk %}{% url 'scrumboard:sprint_update' sprint.pk %}{% else %}{% url 'scrumboard:sprint_create' %}{% endif %}" method="POST">
-            <fieldset class="row" hidden>
-                {% csrf_token %}
-            </fieldset>
-            <fieldset class="row">
-                <legend class="col-xs-12">Sprint {{ sprint.name }}</legend>
-                {% bootstrap_field form.name form_group_class='col-xs-12 form-group' %}
-                <div class="col-xs-12 form-group">
+    <div class="sprint panel panel-primary">
+        <div class="panel-heading">Sprint update form</div>
+        <form class="list-group" action="{% if sprint.pk %}{% url 'scrumboard:sprint_update' sprint.pk %}{% else %}{% url 'scrumboard:sprint_create' %}{% endif %}" method="POST">
+            {% csrf_token %}
+            <div class="list-group-item">
+                {% bootstrap_field form.name %}
+                <div class="form-group">
                     {% bootstrap_label "Duration" label_for='id_duration' %}
                     <div class="sr-only">
                         {{ form.start_date.label_tag }}
@@ -55,10 +45,19 @@
                         {{ form.end_date }}
                     </div>
                 </div>
-                {% bootstrap_field form.capacity form_group_class='col-xs-12 form-group' %}
-            </fieldset>
-            <div class="form-group">
-                {% bootstrap_button 'Submit' icon='ok' button_type='submit' button_class='btn-success' %}
+            </div>
+            <div class="list-group-item">
+                {% bootstrap_field form.capacity %}
+            </div>
+            <div class="list-group-item form-group">
+                <div class="btn-group btn-group-justified" role="group">
+                    <a href="#" class="btn btn-default">
+                        {% bootstrap_icon 'arrow-left' %} Back
+                    </a>
+                    <div class="btn-group">
+                        {% bootstrap_button 'Save' icon='ok' button_type='submit' button_class='btn-success' %}
+                    </div>
+                </div>
             </div>
         </form>
     </div>

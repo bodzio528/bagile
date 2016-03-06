@@ -11,22 +11,24 @@
 {% endblock %}
 
 {% block content %}
-    <div class="item container">
-        <div class="row">
-            <div class="col-xs-12">
+    <div class="item panel panel-info">
+        <div class="panel-heading"><strong>Item</strong></div>
+        <div class="list-group">
+            <div class="list-group-item">
                 {% scrumboard_item_full item %}
             </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-6">
-                <a role="button" class="btn btn-secondary btn-block" href="{% url 'scrumboard:item_update' item.pk %}">
-                {% bootstrap_icon 'pencil' %} Update
-                </a>
-            </div>
-            <div class="col-xs-6">
-                <a role="button" class="btn btn-danger btn-block" href="{% url 'scrumboard:item_delete' item.pk %}">
-                {% bootstrap_icon 'trash' %} Delete
-                </a>
+            <div class="list-group-item">
+                <div class="btn-group btn-group-justified">
+                    <a role="button" class="btn btn-primary" href="{% url 'scrumboard:item_update' item.pk %}">
+                        {% bootstrap_icon 'pencil' %} Update
+                    </a>
+                    <a role="button" class="btn btn-default" href="#">
+                        {% bootstrap_icon 'triangle-left' %} Back
+                    </a>
+                    <a role="button" class="btn btn-danger" href="{% url 'scrumboard:item_delete' item.pk %}">
+                        {% bootstrap_icon 'trash' %} Delete
+                    </a>
+                </div>
             </div>
         </div>
     </div>

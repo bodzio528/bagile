@@ -18,36 +18,35 @@
 {% endblock %}
 
 {% block content %}
-    <div class="item">
-        <form class="form" method="POST" action="{% if item.pk %}{% url 'scrumboard:item_update' item.pk %}{% else %}{% url 'scrumboard:item_create' %}{% endif %}">
-            <fieldset hidden>
-                {% csrf_token %}
-            </fieldset>
-            {% scrumboard_item_form form %}
-            <fieldset class="row">
-                {% bootstrap_field form.status form_group_class='col-xs-6 form-group' %}
-                {% bootstrap_field form.sprint form_group_class='col-xs-6 form-group' %}
-            </fieldset>
-            <fieldset class="row">
-                {% bootstrap_field form.assignee form_group_class='col-xs-9 form-group' %}
-                {% bootstrap_field form.color form_group_class='col-xs-3 form-group' %}
-            </fieldset>
-            <fieldset class="row">
-                <div class="col-xs-12">
-                    <div class="form-group btn-group btn-group-justified">
-                        <div class="btn-group">
-                            {% bootstrap_button "Save" icon='ok' button_type='submit' button_class='btn-success' %}
-                        </div>
-                        <div class="btn-group">
-                            {% bootstrap_button "Back" icon='triangle-left' button_type='link' href='#' button_class='btn-secondary' %}
-                        </div>
-                        <div class="btn-group">
+    <div class="item panel panel-primary">
+        <div class="panel-heading">Item update form</div>
+        <form class="list-group" method="POST" action="{% if item.pk %}{% url 'scrumboard:item_update' item.pk %}{% else %}{% url 'scrumboard:item_create' %}{% endif %}">
+            {% csrf_token %}
+            <div class="list-group-item">
+                {% scrumboard_item_form form %}
+            </div>
+            <div class="list-group-item">
+                <div class="row">
+                    {% bootstrap_field form.status form_group_class='col-xs-6 form-group' %}
+                    {% bootstrap_field form.sprint form_group_class='col-xs-6 form-group' %}
+                    {% bootstrap_field form.assignee form_group_class='col-xs-9 form-group' %}
+                    {% bootstrap_field form.color form_group_class='col-xs-3 form-group' %}
+                </div>
+            </div>
+            <div class="list-group-item">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="form-group btn-group btn-group-justified">
+                            <div class="btn-group">
+                                {% bootstrap_button "Save" icon='ok' button_type='submit' button_class='btn-primary' %}
+                            </div>
+                            {% bootstrap_button "Back" icon='triangle-left' button_type='link' href='#' button_class='btn-default' %}
                             {% url 'scrumboard:item_delete' item.pk as item_delete_url %}
                             {% bootstrap_button "Delete" icon='trash' button_type='link' button_class='btn-danger' href=item_delete_url %}
                         </div>
                     </div>
                 </div>
-            </fieldset>
+            </div>
         </form>
     </div>
 {% endblock %}

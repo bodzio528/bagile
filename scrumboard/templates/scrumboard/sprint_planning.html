@@ -87,15 +87,15 @@
                     <div id='id_{{ form.prefix }}' class="panel panel-primary">
                         <div class="panel-heading"></div>
                         <div class="panel-body">
-                        {% scrumboard_item_form form %}
+                            {% scrumboard_item_form form %}
                         </div>
                         <div class="list-group">
                             <div class="list-group-item">
-                                <div class="row">
-                                    {% bootstrap_field form.status   form_group_class='col-xs-5 form-group' %}
+                                <fieldset class="row">
+                                    {% bootstrap_field form.status form_group_class='col-xs-5 form-group' %}
                                     {% bootstrap_field form.assignee form_group_class='col-xs-5 form-group' %}
                                     {% bootstrap_field form.color form_group_class='col-xs-2 form-group' %}
-                                </div>
+                                </fieldset>
                             </div>
                         </div>
                     </div>
@@ -104,13 +104,20 @@
             </div>
             <div id="id_item_set_empty_form">
                 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                    <div id="id_{{ formset.empty_form.prefix }}" class="item-container">
-                        {% scrumboard_item_form formset.empty_form %}
-                        <fieldset class="row">
-                            {% bootstrap_field formset.empty_form.status    form_group_class='col-xs-5 form-group' %}
-                            {% bootstrap_field formset.empty_form.assignee  form_group_class='col-xs-5 form-group' %}
-                            {% bootstrap_field formset.empty_form.color     form_group_class='col-xs-2 form-group' %}
-                        </fieldset>
+                    <div id="id_{{ formset.empty_form.prefix }}" class="panel panel-primary">
+                        <div class="panel-heading"></div>
+                        <div class="panel-body">
+                            {% scrumboard_item_form formset.empty_form %}
+                        </div>
+                        <div class="list-group">
+                            <div class="list-group-item">
+                                <fieldset class="row">
+                                    {% bootstrap_field formset.empty_form.status form_group_class='col-xs-5 form-group' %}
+                                    {% bootstrap_field formset.empty_form.assignee form_group_class='col-xs-5 form-group' %}
+                                    {% bootstrap_field formset.empty_form.color form_group_class='col-xs-2 form-group' %}
+                                </fieldset>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

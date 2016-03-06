@@ -56,17 +56,8 @@ def style_background_color(color):
 
 @register.inclusion_tag('scrumboard/extras/chart_burndown.html')
 def scrumboard_chart_burndown(sprint):
-    data = [("2016-03-01", 54), ("2016-03-02", -3), ("2016-03-03", -5),  ("2016-03-04", -4), ("2016-03-05", -8),
-            ("2016-03-09", -8), ("2016-03-10",  5), ("2016-03-06", -11), ("2016-03-12", -5), ("2016-03-13", -13)]
-    extra_data = [("2016-03-03", 3), ("2016-03-04", 5), ("2016-03-09", -8)]
-
-    from collections import defaultdict
-
-    timetable = defaultdict(set)
-    for item in data + extra_data:
-        timetable[item[0]].add(item[1])
-    # from scrumboard.models import Event
-    # timetable = Event.get_sprint_timetable(sprint)
+    from scrumboard.models import Event
+    timetable = Event.get_events_timetable(sprint)
 
     from datetime import timedelta, date
 
@@ -77,16 +68,16 @@ def scrumboard_chart_burndown(sprint):
     def iso_date(single_date):
         return single_date.strftime("%Y-%m-%d")
 
-    today = date(2016, 3, 10)  # date.today()
+    tomorrow = date.today() + timedelta(days=1)
 
-    labels1 = [iso_date(single_date) for single_date in daterange(sprint.start_date, today)]  # TODO: if not single_date in sprint.excluded_days()
-    labels2 = [iso_date(single_date) for single_date in daterange(today, sprint.end_date)]
+    labels1 = [iso_date(single_date) for single_date in daterange(sprint.start_date, tomorrow)]  # TODO: if not single_date in sprint.excluded_days()
+    labels2 = [iso_date(single_date) for single_date in daterange(tomorrow, sprint.end_date + timedelta(days=1))]
 
     from itertools import accumulate
     dataset_burndown = list(accumulate([sum(timetable[l]) for l in labels1]))
 
     sprint_length = int((sprint.end_date - sprint.start_date).days)  # TODO: sprint.length() that takes free days into account
-    dataset_prognosis = [sprint.capacity*(1.0 - (x + 1)/sprint_length) for x in range(sprint_length)]
+    dataset_prognosis = [sprint.capacity*(1.0 - x/sprint_length) for x in range(sprint_length)] + [0]
 
     return {'sprint': sprint,
             'labels': labels1 + labels2,

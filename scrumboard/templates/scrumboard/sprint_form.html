@@ -1,13 +1,63 @@
 {% extends 'scrumboard/base.html' %}
 
+{% load bootstrap3 %}
+
 {% block head_title %}Sprint {% if sprint.pk %}{{ sprint.name }} Update{% else %}Create{% endif %}{% endblock %}
 
+{% block rel_stylesheets %}
+    <style>
+        div.sprint {
+            background-color: #eee;
+            display: block;
+            margin: 0 auto;
+            width: 500px;
+
+            background: #fff;
+            padding: 1em;
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            box-shadow: 2px 2px 4px 0 #ccc;
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/js/bootstrap-datepicker.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker.min.css">
+
+    <script>
+        $(document).ready(function() {
+            $.fn.datepicker.defaults.format = "yyyy-mm-dd";
+            $.fn.datepicker.defaults.todayBtn = "linked";
+        });
+    </script>
+{% endblock %}
+
 {% block content %}
+    <div class="sprint">
         <form action="{% if sprint.pk %}{% url 'scrumboard:sprint_update' sprint.pk %}{% else %}{% url 'scrumboard:sprint_create' %}{% endif %}" method="POST">
-            {% csrf_token %}
-            <table>
-                {{ form.as_table }}
-            </table>
-            <input type="submit" value="Submit">
+            <fieldset class="row" hidden>
+                {% csrf_token %}
+            </fieldset>
+            <fieldset class="row">
+                <legend class="col-xs-12">Sprint {{ sprint.name }}</legend>
+                {% bootstrap_field form.name form_group_class='col-xs-12 form-group' %}
+                <div class="col-xs-12 form-group">
+                    {% bootstrap_label "Duration" label_for='id_duration' %}
+                    <div class="sr-only">
+                        {{ form.start_date.label_tag }}
+                        {{ form.end_date.label_tag }}
+                    </div>
+                    <div class="input-daterange input-group" data-provide="datepicker" id="id_duration">
+                        {{ form.start_date }}
+                        <span class="input-group-addon">to</span>
+                        {{ form.end_date }}
+                    </div>
+                </div>
+                {% bootstrap_field form.capacity form_group_class='col-xs-12 form-group' %}
+            </fieldset>
+            <div class="form-group">
+                {% bootstrap_button 'Submit' icon='ok' button_type='submit' button_class='btn-success' %}
+            </div>
         </form>
+    </div>
 {% endblock %}

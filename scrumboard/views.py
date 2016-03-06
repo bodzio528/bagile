@@ -1,10 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse_lazy
-from django.forms import model_to_dict
-from django.http import JsonResponse, Http404
+from django.forms import model_to_dict, modelform_factory, DateInput
+from django.http import Http404
 from django.views.generic import TemplateView, View
-from django.views.generic.base import ContextMixin
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
@@ -140,7 +139,10 @@ class SprintUpdateView(LoginRequiredMixin, UpdateView):
     Update Sprint data.
     """
     model = Sprint
-    fields = '__all__'
+    form_class = modelform_factory(Sprint,
+                                   fields='__all__',
+                                   widgets={"start_date": DateInput(attrs={'class': 'form-control'}),
+                                            "end_date": DateInput(attrs={'class': 'form-control'})})
 
     def get_object(self, queryset=None):
         return Sprint.objects.get(id=self.kwargs['pk'])

@@ -24,23 +24,89 @@ class EventFactoryTestCase(TestCase):
         events = Event.create_item_changed_events(self.item)
         assert 0 == len(events)
 
-    def test_create_event_for_instance_created(self):
-        event = Event.create_item_created_event(self.item)
+    def test_create_event_for_instance_created_with_full_estimate_when_committed_wip_or_blocked(self):
+        def test_for_status(status):
+            self.item.status = status
+            event = Event.create_item_created_event(self.item)
 
-        assert isinstance(event, Event)
-        assert event.change == Event.INC
-        assert event.value == 7
+            assert isinstance(event, Event)
+            assert event.change == Event.INC
+            assert event.value == 7
+            assert event.sprint == self.sprint
 
-        assert event.sprint == self.sprint
+        test_for_status(Item.COMMITTED)
+        test_for_status(Item.WIP)
+        test_for_status(Item.BLOCKED)
 
-    def test_create_event_for_instance_deleted(self):
-        event = Event.create_item_deleted_event(self.item)
+    def test_create_event_for_instance_created_with_review_estimate_when_ready_review_or_fix(self):
+        def test_for_status(status):
+            self.item.status = status
+            event = Event.create_item_created_event(self.item)
 
-        assert isinstance(event, Event)
-        assert event.change == Event.DEC
-        assert event.value == 7
+            assert isinstance(event, Event)
+            assert event.change == Event.INC
+            assert event.value == 2
+            assert event.sprint == self.sprint
 
-        assert event.sprint == self.sprint
+        test_for_status(Item.PENDING_REVIEW)
+        test_for_status(Item.REVIEW)
+        test_for_status(Item.FIX)
+
+    def test_do_not_create_event_for_instance_created_if_status_is_done_or_external_review(self):
+        def test_for_status(status):
+            self.item.status = status
+            assert Event.create_item_created_event(self.item) is None
+
+        test_for_status(Item.DONE)
+        test_for_status(Item.EXTERNAL_REVIEW)
+
+    def test_do_not_create_event_for_instance_created_if_estimates_are_0(self):
+        self.item.estimate_work = 0
+        self.item.estimate_review = 0
+
+        assert Event.create_item_created_event(self.item) is None
+
+    def test_create_event_for_instance_deleted_with_full_estimate_when_committed_wip_or_blocked(self):
+        def test_for_status(status):
+            self.item.status = status
+            event = Event.create_item_deleted_event(self.item)
+
+            assert isinstance(event, Event)
+            assert event.change == Event.DEC
+            assert event.value == 7
+            assert event.sprint == self.sprint
+
+        test_for_status(Item.COMMITTED)
+        test_for_status(Item.WIP)
+        test_for_status(Item.BLOCKED)
+
+    def test_create_event_for_instance_deleted_with_review_estimate_when_ready_review_or_fix(self):
+        def test_for_status(status):
+            self.item.status = status
+            event = Event.create_item_deleted_event(self.item)
+
+            assert isinstance(event, Event)
+            assert event.change == Event.DEC
+            assert event.value == 2
+            assert event.sprint == self.sprint
+
+        test_for_status(Item.PENDING_REVIEW)
+        test_for_status(Item.REVIEW)
+        test_for_status(Item.FIX)
+
+    def test_do_not_create_event_for_instance_deleted_if_status_is_done_or_external_review(self):
+        def test_for_status(status):
+            self.item.status = status
+            assert Event.create_item_deleted_event(self.item) is None
+
+        test_for_status(Item.DONE)
+        test_for_status(Item.EXTERNAL_REVIEW)
+
+    def test_do_not_create_event_for_instance_deleted_if_estimates_are_0(self):
+        self.item.estimate_work = 0
+        self.item.estimate_review = 0
+
+        assert Event.create_item_deleted_event(self.item) is None
 
 
 class EstimateChangeEventFactoryTestCase(TestCase):

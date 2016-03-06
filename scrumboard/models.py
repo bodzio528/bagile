@@ -189,19 +189,29 @@ class Event(models.Model):
 
     @staticmethod
     def create_item_created_event(instance):
-        return Event(
-            sprint=instance.sprint,
-            change=Event.INC,
-            value=instance.get_full_estimate()
-        )
+        effort = instance.estimate_work if instance.status in {Item.COMMITTED, Item.WIP, Item.BLOCKED} else 0
+        review = instance.estimate_review if instance.status not in {Item.EXTERNAL_REVIEW, Item.DONE} else 0
+
+        if effort + review > 0:
+            return Event(
+                sprint=instance.sprint,
+                change=Event.INC,
+                value=effort + review
+            )
+        return None
 
     @staticmethod
     def create_item_deleted_event(instance):
-        return Event(
-            sprint=instance.sprint,
-            change=Event.DEC,
-            value=instance.get_full_estimate()
-        )
+        effort = instance.estimate_work if instance.status in {Item.COMMITTED, Item.WIP, Item.BLOCKED} else 0
+        review = instance.estimate_review if instance.status not in {Item.EXTERNAL_REVIEW, Item.DONE} else 0
+
+        if effort + review > 0:
+            return Event(
+                sprint=instance.sprint,
+                change=Event.DEC,
+                value=effort + review
+            )
+        return None
 
     @staticmethod
     def create_item_changed_events(instance):
@@ -281,12 +291,16 @@ def create_event_for_item_update(sender, instance, **kwargs):
 @receiver(post_save, sender=Item)
 def create_event_for_item_create(sender, instance, created, **kwargs):
     if created:
-        Event.create_item_created_event(instance).save()
+        event = Event.create_item_created_event(instance)
+        if event is not None:
+            event.save()
 
 
 @receiver(pre_delete, sender=Item)
 def create_event_for_item_delete(sender, instance, **kwargs):
-    Event.create_item_created_event(instance).save()
+    event = Event.create_item_created_event(instance)
+    if event is not None:
+        event.save()
 
 
 def user_directory_path(instance, filename):

@@ -1,3 +1,13 @@
+## Customize the test machine
+machine:
+  timezone:
+    Europe/Warsaw
+
+  # Version of python to use
+  python:
+    version:
+      3.5.0
+
 ## Customize dependencies
 dependencies:
   pre:

@@ -1,3 +1,5 @@
+[![Circle CI](https://circleci.com/gh/bodzio528/bagile/tree/master.svg?style=svg)](https://circleci.com/gh/bodzio528/bagile/tree/master)
+
 # BAgile - django team scrumboard project
 
 ## Target URL configuration

@@ -1,2 +1,7 @@
 [run]
 branch=True
+source=scrumboard
+
+[report]
+fail_under=80
+skip_covered=True

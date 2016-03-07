@@ -1,9 +1,5 @@
 ## Customize the test machine
 machine:
-  timezone:
-    Europe/Warsaw
-
-  # Version of python to use
   python:
     version:
       3.5.0
@@ -15,4 +11,5 @@ dependencies:
 
 test:
   override:
-    - python manage.py test --settings=bagile.test_settings scrumboard
+    - coverage run manage.py test --settings=bagile.test_settings scrumboard
+    - coverage html -d $CIRCLE_ARTIFACTS/coverage

@@ -1,0 +1,8 @@
+## Customize dependencies
+dependencies:
+  pre:
+    - cp bagile/secret.py.template bagile/secret.py
+
+test:
+  override:
+    - python manage.py test --settings=bagile.test_settings scrumboard

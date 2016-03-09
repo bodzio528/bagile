@@ -1,17 +1,17 @@
 {% extends 'scrumboard/base.html' %}
 
-{% load bootstrap3 %}
+{% load scrumboard_extras %}
 
 {% block head_title %}Sprint {{ sprint.name }} Details{% endblock %}
 
 {% block rel_stylesheets %}
-    <style>
-        div.sprint {
-            display: block;
-            margin: 0 auto;
-            width: 500px;
-        }
-    </style>
+        <style>
+            div.sprint {
+                display: block;
+                margin: 0 auto;
+                width: 500px;
+            }
+        </style>
 {% endblock %}
 
 {% block content %}
@@ -47,10 +47,10 @@
             <div class="list-group-item">
                 <div class="btn-group btn-group-justified" role="group">
                     <a href="{% url 'scrumboard:sprint_update' sprint.pk %}" class="btn btn-primary">
-                        {% bootstrap_icon 'pencil' %} Update
+                        {% fa_icon 'pencil' %} Update
                     </a>
                     <a href="#" class="btn btn-default">
-                        {% bootstrap_icon 'arrow-left' %} Back
+                        {% fa_icon 'caret-left' %} Back
                     </a>
                 </div>
             </div>

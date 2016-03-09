@@ -13,3 +13,7 @@ input[type="number"]:hover,
 input[type="number"]:focus {
   -moz-appearance: number-input;
 }
+
+input[type="color"] {
+    height: 2em;
+}

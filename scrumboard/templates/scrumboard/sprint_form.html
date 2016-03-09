@@ -1,35 +1,38 @@
 {% extends 'scrumboard/base.html' %}
 
 {% load bootstrap3 %}
+{% load scrumboard_extras %}
 
 {% block head_title %}Sprint {% if sprint.pk %}{{ sprint.name }} Update{% else %}Create{% endif %}{% endblock %}
 
 {% block rel_stylesheets %}
-    <style>
-        div.sprint {
-            display: block;
-            margin: 0 auto;
-            width: 500px;
-        }
-    </style>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker.min.css">
+        <style>
+            div.sprint {
+                display: block;
+                margin: 0 auto;
+                width: 500px;
+            }
+        </style>
+{% endblock %}
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/js/bootstrap-datepicker.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker.min.css">
+{% block scripts %}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/js/bootstrap-datepicker.min.js"></script>
 
-    <script>
-        $(document).ready(function() {
-            $.fn.datepicker.defaults.format = "yyyy-mm-dd";
-            $.fn.datepicker.defaults.todayBtn = "linked";
-            $.fn.datepicker.defaults.autoclose = true;
-            $.fn.datepicker.defaults.todayHighlight = true;
-        });
-    </script>
+        <script>
+            $(document).ready(function() {
+                $.fn.datepicker.defaults.format = "yyyy-mm-dd";
+                $.fn.datepicker.defaults.todayBtn = "linked";
+                $.fn.datepicker.defaults.autoclose = true;
+                $.fn.datepicker.defaults.todayHighlight = true;
+            });
+        </script>
 {% endblock %}
 
 {% block content %}
-    <div class="sprint panel panel-primary">
-        <div class="panel-heading">Sprint update form</div>
-        <form class="list-group" action="{% if sprint.pk %}{% url 'scrumboard:sprint_update' sprint.pk %}{% else %}{% url 'scrumboard:sprint_create' %}{% endif %}" method="POST">
+    <div class="sprint card">
+        <!--div class="card-header">Sprint update form</div-->
+        <form class="list-group list-group-flush" method="POST" action="{% if sprint.pk %}{% url 'scrumboard:sprint_update' sprint.pk %}{% else %}{% url 'scrumboard:sprint_create' %}{% endif %}">
             {% csrf_token %}
             <div class="list-group-item">
                 {% bootstrap_field form.name %}
@@ -49,13 +52,13 @@
             <div class="list-group-item">
                 {% bootstrap_field form.capacity %}
             </div>
-            <div class="list-group-item form-group">
-                <div class="btn-group btn-group-justified" role="group">
-                    <a href="#" class="btn btn-default">
-                        {% bootstrap_icon 'arrow-left' %} Back
-                    </a>
-                    <div class="btn-group">
-                        {% bootstrap_button 'Save' icon='ok' button_type='submit' button_class='btn-success' %}
+            <div class="list-group-item">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <button class="btn btn-primary-outline btn-block" type="submit">{% fa_icon 'check' %} Save</button>
+                    </div>
+                    <div class="col-xs-6">
+                        <a href="#" class="btn btn-secondary btn-block">{% fa_icon 'caret-left' %} Back</a>
                     </div>
                 </div>
             </div>

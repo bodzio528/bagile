@@ -83,3 +83,22 @@ def scrumboard_chart_burndown(sprint):
             'labels': labels1 + labels2,
             'dataset_burndown': dataset_burndown,
             'dataset_prognosis': dataset_prognosis}
+
+
+@register.simple_tag
+def fa_icon(icon_name, icon_size=None):
+    icon = ' fa-' + icon_name
+    size = (' fa-' + icon_size) if icon_size else ''
+
+    from django.utils.safestring import mark_safe
+    return mark_safe('<i class="fa{0}{1}"></i>'.format(icon, size))
+
+
+# @register.simple_tag
+# def bootstrap4_select2_field(field):
+#     #import pdb; pdb.set_trace()
+#     for k in dir(field):
+#         print(k, getattr(field,k, None))
+#
+#     from django.utils.safestring import mark_safe
+#     return mark_safe('<select class="form-control"></select>')

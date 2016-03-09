@@ -1,37 +1,43 @@
 <!DOCTYPE html>
-
-{% load staticfiles %}
-{% load scrumboard_extras %}
-
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
+    <head>{% load staticfiles %}{% load scrumboard_extras %}
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+
         <title>{% block head_title %}{% endblock %}</title>
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-        <!--link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"-->
-        <!--link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css" crossorigin="anonymous"-->
-        <!--script src="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/js/bootstrap.js" crossorigin="anonymous"></script-->
-
-        <link  rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
-
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/css/tether.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css">
         <link rel="stylesheet" href="{% static 'scrumboard/css/select2-bootstrap.css' %}">
 
         <style>
             body {
                 padding-bottom: 70px; /* bottom navbar */
             }
-
-            .select-current-sprint-btn {
-                width: 300px;
-            }
         </style>
-
         {% block rel_stylesheets %}{% endblock %}
+    </head>
+    <body>
+        <nav class="navbar navbar-full navbar-light bg-faded" role="navigation">
+            <a class="navbar-brand" href="{% url 'scrumboard:index'%}">Scrumboard</a>
+            <ul class="nav navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'scrumboard:sprint_current_planning' %}">Planning</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'scrumboard:sprint_current_burndown_chart' %}">Burndown</a>
+                </li>
+            </ul>
+            {% scrumboard_sprint_active_select %}
+        </nav>
+        {% block content %}{% endblock %}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/js/tether.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
 
         <script>
             var initSelect2 = function(selector) {
@@ -46,35 +52,6 @@
                 initSelect2('select:visible');
             });
         </script>
-    </head>
-    <body>
-        <nav class="navbar navbar-default">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="{% url 'scrumboard:index'%}">Scrumboard</a>
-                </div>
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <ul class="nav navbar-nav">
-                        <li>
-                            <a href="{% url 'scrumboard:sprint_current_planning' %}">Planning</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'scrumboard:sprint_current_burndown_chart' %}">Burndown</a>
-                        </li>
-                        <li>
-                            {% scrumboard_sprint_active_select %}
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-        {% block content %}
-        {% endblock %}
+        {% block scripts %}{% endblock %}
     </body>
 </html>

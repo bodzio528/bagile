@@ -5,16 +5,18 @@
 
 {% block head_title %}Scrumboard for Sprint {{ sprint.name }}{% endblock %}
 
-{% block rel_stylesheets %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.0.0-beta2/Chart.min.js"></script>
+{% block scripts %}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.0.0-beta2/Chart.min.js"></script>
+        {% scrumboard_chart_burndown sprint %}
 {% endblock %}
 
 {% block content %}
     <div class="container-fluid">
         <div class="row">
             <div class="col-xs-10 col-xs-offset-1">
-                {% scrumboard_chart_burndown sprint %}
+                <h2>TEST Burndown chart for sprint {% scrumboard_sprint_url sprint %} -- SIMULATED DATA</h2>
+                <canvas id="id_chart_burndown-{{ sprint.id }}"></canvas>
             </div>
         </div>
     </div>

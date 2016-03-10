@@ -1,32 +1,38 @@
 {% extends 'scrumboard/base.html' %}
 
+{% load staticfiles %}
 {% load scrumboard_extras %}
-{% load bootstrap3 %}
 
 {% block head_title %}Item Details{% endblock %}
 
 {% block rel_stylesheets %}
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/scrumboard/css/item.css">
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/scrumboard/css/fancy_item.css">
+        <link rel="stylesheet" type="text/css" href="{% static 'scrumboard/css/item.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'scrumboard/css/fancy_item.css' %}">
 {% endblock %}
 
 {% block content %}
-    <div class="item panel panel-info">
-        <div class="panel-heading"><strong>Item</strong></div>
-        <div class="list-group">
+    <div class="item card card-info-outline">
+        <div class="card-header card-info">Item details</div>
+        <div class="list-group list-group-flush">
             <div class="list-group-item">
                 {% scrumboard_item_full item %}
             </div>
-            <div class="list-group-item">
-                <div class="btn-group btn-group-justified">
-                    <a role="button" class="btn btn-primary" href="{% url 'scrumboard:item_update' item.pk %}">
-                        {% bootstrap_icon 'pencil' %} Update
+        </div>
+        <div class="card-block">
+            <div class="row">
+                <div class="col-xs-4">
+                    <a role="button" class="btn btn-primary-outline btn-block" href="{% url 'scrumboard:item_update' item.pk %}">
+                        {% fa_icon 'pencil' %} Update
                     </a>
-                    <a role="button" class="btn btn-default" href="#">
-                        {% bootstrap_icon 'triangle-left' %} Back
+                </div>
+                <div class="col-xs-4">
+                    <a role="button" class="btn btn-secondary-outline btn-block" href="#">
+                        {% fa_icon 'caret-left' %} Back
                     </a>
-                    <a role="button" class="btn btn-danger" href="{% url 'scrumboard:item_delete' item.pk %}">
-                        {% bootstrap_icon 'trash' %} Delete
+                </div>
+                <div class="col-xs-4">
+                    <a role="button" class="btn btn-danger-outline btn-block" href="{% url 'scrumboard:item_delete' item.pk %}">
+                        {% fa_icon 'trash' %} Delete
                     </a>
                 </div>
             </div>

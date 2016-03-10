@@ -183,7 +183,7 @@ class SprintPlanningView(LoginRequiredMixin, InlineFormSetView):
     context_object_name = 'sprint'
     template_name = 'scrumboard/sprint_planning.html'
 
-    extra = 0
+    extra = 1
     max_num = 20
     can_delete = True
     can_order = False

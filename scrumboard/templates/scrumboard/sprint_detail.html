@@ -1,23 +1,28 @@
 {% extends 'scrumboard/base.html' %}
 
-{% load bootstrap3 %}
+{% load staticfiles %}
+{% load scrumboard_extras %}
 
 {% block head_title %}Sprint {{ sprint.name }} Details{% endblock %}
 
 {% block rel_stylesheets %}
-    <style>
-        div.sprint {
-            display: block;
-            margin: 0 auto;
-            width: 500px;
-        }
-    </style>
+        <link rel="stylesheet" type="text/css" href="{% static 'scrumboard/css/sprint.css' %}">
 {% endblock %}
 
 {% block content %}
-    <div class="sprint panel panel-info">
-        <div class="panel-heading"><strong>Sprint</strong></div>
-        <div class="list-group">
+    <div class="sprint card card-info-outline">
+        <div class="card-header card-info">Sprint details</div>
+        <div class="list-group list-group-flush">
+            <div class="list-group-item">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <strong>Name</strong>
+                    </div>
+                    <div class="col-xs-9">
+                        {{ sprint.name }}
+                    </div>
+                </div>
+            </div>
             <div class="list-group-item">
                 <div class="row">
                     <div class="col-xs-3">
@@ -44,14 +49,14 @@
                     </div>
                 </div>
             </div>
-            <div class="list-group-item">
-                <div class="btn-group btn-group-justified" role="group">
-                    <a href="{% url 'scrumboard:sprint_update' sprint.pk %}" class="btn btn-primary">
-                        {% bootstrap_icon 'pencil' %} Update
-                    </a>
-                    <a href="#" class="btn btn-default">
-                        {% bootstrap_icon 'arrow-left' %} Back
-                    </a>
+        </div>
+        <div class="card-block">
+            <div class="row">
+                <div class="col-xs-6">
+                    <a href="{% url 'scrumboard:sprint_update' sprint.pk %}" class="btn btn-primary-outline btn-block">{% fa_icon 'pencil' %} Update</a>
+                </div>
+                <div class="col-xs-6">
+                    <a href="#" class="btn btn-secondary-outline btn-block">{% fa_icon 'caret-left' %} Back</a>
                 </div>
             </div>
         </div>

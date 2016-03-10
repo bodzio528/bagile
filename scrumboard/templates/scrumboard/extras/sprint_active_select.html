@@ -1,22 +1,30 @@
-{% load bootstrap3 %}
+{% load scrumboard_extras %}
 
-<form class="navbar-form" role="form" action="{% url 'scrumboard:sprint_current' %}" method="post">
+<form class="form-inline pull-xs-right" action="{% url 'scrumboard:sprint_current' %}" method="post">
     {% csrf_token %}
     <input type="hidden" name="next" value="{{ current_url }}">
     <fieldset class="form-group">
-        <div class="select-current-sprint-btn input-group select2-bootstrap-append select2-bootstrap-prepend">
-            <span class="input-group-addon">
-                <label for="id_select_current_sprint" class="control-label">Current Sprint:</label>
-            </span>
-            <select id="id_select_current_sprint" class="form-control select2" name="current_sprint_pk" data-minimum-results-for-search="-1" onchange="this.form.submit()">
-                {% for sprint in active_sprints %}
-                <option value="{{ sprint.id }}" {% if sprint.id == current_sprint.id %}selected{% endif %}>{{ sprint.name }}</option>
-                {% endfor %}
-            </select>
-            <span class="input-group-btn">
-                <a class="btn btn-default" href="{% url 'scrumboard:sprint_update' current_sprint.id %}">{% bootstrap_icon "pencil" %}</a>
-                {% bootstrap_button "" icon="refresh" button_type="submit" button_class="btn btn-success" %}
-            </span>
-        </div>
+        {% if active_sprints|length > 1 %}
+            <div class="input-group select2-bootstrap-append select2-bootstrap-prepend">
+                <span class="input-group-addon" id="id_select_current_sprint_label">Current Sprint:</span>
+                <select class="form-control" id="id_select_current_sprint" name="current_sprint_pk" onchange="this.form.submit()" aria-describedby="id_select_current_sprint_label">
+                    {% for sprint in active_sprints %}
+                        <option value="{{ sprint.id }}"{% if sprint.id == current_sprint.id %} selected{% endif %}>{{ sprint.name }}</option>
+                    {% endfor %}
+                </select>
+                <span class="input-group-btn">
+                    <a class="btn btn-primary-outline" href="{% url 'scrumboard:sprint_update' current_sprint.id %}">{% fa_icon "pencil" %}</a>
+                </span>
+            </div>
+        {% else %}
+            <input type="hidden" name=current_sprint_pk" value="{{ current_sprint.id }}">
+            <div class="input-group">
+                <span class="input-group-addon" id="id_current_sprint_label">Current Sprint:</span>
+                <input type="text" class="form-control" id="id_current_sprint" value="{{ current_sprint.name }}" readonly>
+                <span class="input-group-btn">
+                    <a class="btn btn-primary-outline" href="{% url 'scrumboard:sprint_update' current_sprint.id %}">{% fa_icon "pencil" %}</a>
+                </span>
+            </div>
+        {% endif %}
     </fieldset>
 </form>

@@ -7,20 +7,20 @@
 {% block head_title %}{% if item.pk %}Update{% else %}Create{% endif %} Item{% endblock %}
 
 {% block rel_stylesheets %}
-    <link rel="stylesheet" type="text/css" href="{% static 'scrumboard/css/item.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'scrumboard/css/item.css' %}">
 
-    <style>
-        .select2-results__option {
-            white-space: nowrap;
-            width: 100%;
-        }
-    </style>
+        <style>
+            .select2-results__option {
+                white-space: nowrap;
+                width: 100%;
+            }
+        </style>
 {% endblock %}
 
 {% block content %}
-    <div class="item panel panel-primary">
-        <div class="panel-heading">Item update form</div>
-        <form class="list-group" method="POST" action="{% if item.pk %}{% url 'scrumboard:item_update' item.pk %}{% else %}{% url 'scrumboard:item_create' %}{% endif %}">
+    <div class="item card card-inverse card-primary-outline">
+        <div class="card-header card-primary">Item update form</div>
+        <form class="list-group list-group-flush" method="POST" action="{% if item.pk %}{% url 'scrumboard:item_update' item.pk %}{% else %}{% url 'scrumboard:item_create' %}{% endif %}">
             {% csrf_token %}
             <div class="list-group-item">
                 {% scrumboard_item_form form %}
@@ -35,15 +35,20 @@
             </div>
             <div class="list-group-item">
                 <div class="row">
-                    <div class="col-xs-12">
-                        <div class="form-group btn-group btn-group-justified">
-                            <div class="btn-group">
-                                {% bootstrap_button "Save" icon='ok' button_type='submit' button_class='btn-primary' %}
-                            </div>
-                            {% bootstrap_button "Back" icon='triangle-left' button_type='link' href='#' button_class='btn-default' %}
-                            {% url 'scrumboard:item_delete' item.pk as item_delete_url %}
-                            {% bootstrap_button "Delete" icon='trash' button_type='link' button_class='btn-danger' href=item_delete_url %}
-                        </div>
+                    <div class="col-xs-4">
+                        <button class='btn btn-primary-outline btn-block' type="submit">
+                            {% fa_icon 'check' %} Save
+                        </button>
+                    </div>
+                    <div class="col-xs-4">
+                        <a class='btn btn-secondary-outline btn-block' href="#">
+                            {% fa_icon 'caret-left' %} Back
+                        </a>
+                    </div>
+                    <div class="col-xs-4">
+                        <a class='btn btn-danger-outline btn-block' href="{% url 'scrumboard:item_delete' item.pk %}">
+                            {% fa_icon 'trash' %} Delete
+                        </a>
                     </div>
                 </div>
             </div>

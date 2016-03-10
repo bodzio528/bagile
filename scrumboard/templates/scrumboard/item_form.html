@@ -18,8 +18,8 @@
 {% endblock %}
 
 {% block content %}
-    <div class="item card">
-        <div class="card-header">Item update form</div>
+    <div class="item card card-inverse card-primary-outline">
+        <div class="card-header card-primary">Item update form</div>
         <form class="list-group list-group-flush" method="POST" action="{% if item.pk %}{% url 'scrumboard:item_update' item.pk %}{% else %}{% url 'scrumboard:item_create' %}{% endif %}">
             {% csrf_token %}
             <div class="list-group-item">

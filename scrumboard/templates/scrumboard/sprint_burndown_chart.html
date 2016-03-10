@@ -9,6 +9,12 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.0.0-beta2/Chart.min.js"></script>
         {% scrumboard_chart_burndown sprint %}
+
+        <script>
+            $(document).ready(function() {
+                $('#id_nav_link_burndown').addClass('active');
+            });
+        </script>
 {% endblock %}
 
 {% block content %}

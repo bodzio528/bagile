@@ -38,7 +38,6 @@ class ScrumboardViewTestCase(TestCase):
             status=Item.COMMITTED,
             sprint=self.current_sprint
         )
-        item.save()
 
         c = Client()
         response = c.get(reverse('scrumboard:index'))

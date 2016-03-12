@@ -3,5 +3,7 @@ branch=True
 source=scrumboard
 
 [report]
-fail_under=80
-skip_covered=True
+fail_under=85
+skip_covered=False
+omit=scrumboard/migrations/*
+;show_missing=True

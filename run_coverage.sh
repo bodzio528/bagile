@@ -1,4 +1,4 @@
 #!/bin/sh
 
-coverage3 run --source='.' manage.py test scrumboard
-coverage3 report
+coverage run manage.py test --settings=bagile.test_settings scrumboard
+coverage report

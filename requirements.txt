@@ -1,9 +1,9 @@
 coverage==4.0.3
-Django==1.9
+Django==1.9.4
 django-appconf==1.0.1
-django-bootstrap3==6.2.2
-django-html5-colorfield==1.0
+django-bootstrap3==7.0.0
 django-extra-views==0.7.1
-pep8==1.6.2
+django-html5-colorfield==1.0
+Django-Select2==5.8.4
+pep8==1.7.0
 six==1.10.0
-wheel==0.24.0

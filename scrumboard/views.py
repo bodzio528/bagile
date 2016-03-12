@@ -183,10 +183,10 @@ class SprintPlanningView(LoginRequiredMixin, InlineFormSetView):
     context_object_name = 'sprint'
     template_name = 'scrumboard/sprint_planning.html'
 
-    extra = 1
+    extra = 0
     max_num = 20
     can_delete = True
-    can_order = False
+    can_order = True
 
     def get_context_data(self, **kwargs):
         context = super(SprintPlanningView, self).get_context_data(**kwargs)

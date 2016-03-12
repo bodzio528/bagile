@@ -2,9 +2,9 @@
 {% load bootstrap3 %}
 
 <fieldset hidden>
-    {% for hidden in form.hidden_fields %}
-        {{ hidden }}
-    {% endfor %}
+{% for hidden in form.hidden_fields %}
+    {{ hidden }}
+{% endfor %}
 </fieldset>
 <fieldset class="row">
     {% bootstrap_field form.name form_group_class='col-xs-6 form-group' %}
@@ -19,5 +19,5 @@
     </div>
 </fieldset>
 <fieldset class="row">
-    {% bootstrap_field form.description show_label=False form_group_class='col-xs-12 form-group' %}
+    {% bootstrap_field form.description show_label=False form_group_class='col-xs-12' %}
 </fieldset>

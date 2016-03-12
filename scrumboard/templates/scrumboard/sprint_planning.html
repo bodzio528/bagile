@@ -15,50 +15,242 @@
                 height: 100px;
                 resize: none;
             }
-
-            #id_item_set_empty_form {
-                display: none;
-            }
         </style>
 {% endblock %}
 
 {% block scripts %}
         <script type="text/javascript">
-            var updateTotalFormCount = function() {
-                $('#id_{{ formset.prefix }}-TOTAL_FORMS').val({{ formset.initial_form_count }});
-            };
-
-            var submitFormset = function() {
-                $('#item_formset').submit();
-            };
-
-            var addMore = function() {
-                var totalForms = '#id_{{ formset.prefix }}-TOTAL_FORMS';
-
-                var formIdx = $(totalForms).val();
-                $('#form_set').append($('#id_item_set_empty_form').html().replace(/__prefix__/g, formIdx));
-
-                $('#id_item_set-' + formIdx + '-color').val($('#id_repaint_all_items').val());
-                $('#id_item_set-' + formIdx + '-name').val($('#id_rename_all_items').val());
-
-                initSelect2('#id_{{ formset.prefix }}-' + formIdx + ' select');
-
-                $(totalForms).val(parseInt(formIdx) + 1);
-            };
-
             var repaintAll = function() {
                 var color = $('#id_repaint_all_items').val();
-                $('input[type=color]').val(color);
+                $('input[type="color"]').val(color);
             };
 
             var renameAll = function() {
                 var name = $('#id_rename_all_items').val();
-                $('input[placeholder=Name]').val(name);
+                $('input[placeholder="Name"]').val(name);
             };
 
             $(document).ready(function() {
                 $('#id_nav_link_planning').addClass('active');
-                updateTotalFormCount();
+            });
+        </script>
+
+        <script>
+            /*
+             * Based on django-bootstrap-dynamic-formset
+             *
+             * GitHub:  https://github.com/FHBrandenburg/django-bootstrap-dynamic-formsets
+             * PyPI:    https://pypi.python.org/pypi/django-bootstrap-dynamic-formsets
+             */
+            $(document).ready(function () {
+
+                // Checks if input is empty or, in case of a checkbox, unchecked
+                var checkEmpty = function ($inputToCheck) {
+                    var isEmpty = false;
+                    if ($inputToCheck.attr('type') === 'checkbox') {
+                        isEmpty = !$inputToCheck.prop('checked');
+                    } else if ($inputToCheck.attr('type') == 'number') {
+                        isEmpty = ("0" == $inputToCheck.prop('value'));
+                    } else {
+                        $inputToCheck.filter(function () {
+                            isEmpty = !this.value;
+                            return false;
+                        });
+                    }
+                    return isEmpty;
+                };
+
+                //Checks if all inputs in this container are empty/unchecked
+                var allEmpty = function ($toCheck) {
+                    var isEmpty = true;
+
+                    $toCheck.find('input[type="text"]').each(function () {
+                        if (!checkEmpty($(this))) {
+                            isEmpty = false;
+                            return false;
+                        }
+                    });
+
+                    if (!isEmpty) {
+                        return false;
+                    }
+
+                    $toCheck.find('input[type="number"]').each(function () {
+                        if (!checkEmpty($(this))) {
+                            isEmpty = false;
+                            return false;
+                        }
+                    });
+
+                    return isEmpty;
+                };
+
+
+                //Writes the correct current order in the order form fields
+                var correctOrder = function () {
+                    var localSortItemCounter = 1;
+                    $("[id$=ORDER]").each(function () {
+                        $(this).attr('value', localSortItemCounter);
+                        localSortItemCounter++;
+                    });
+                };
+
+                //Hide "Order" and "Delete" field/checkbox
+                $("[id$=ORDER]").parents(".form-group").hide();
+                $("[id$=DELETE]").parents(".form-group").hide();
+
+                //Holds an empty form
+                var $emptyForm = $('#empty-form').remove().children().unwrap();
+
+                var $sortItem = $('.sort-item');
+
+                //Disable Up button on first and Down button on last form
+                var setUpDownButtons = function () {
+                    $sortItem = $('.sort-item');
+                    $sortItem.find(".up-form, .down-form").each(function () {
+                        $(this).prop("disabled", false);
+                    });
+                    $sortItem.first().find(".up-form").prop("disabled", true);
+                    $sortItem.last().find(".down-form").prop("disabled", true);
+                };
+
+
+                //Hide forms that are marked for deletion
+                $sortItem.find('[id$=DELETE]').each(function () {
+                    if ($(this).prop('checked')) {
+                        $(this).parents(".sort-item").hide();
+                    }
+                });
+
+
+                //Counts the number of forms
+                var sortItemCounter = 0;
+                $sortItem.each(function () {
+                    sortItemCounter++;
+                });
+                //$('body').prepend('<p>Count: ' + sortItemCounter + '</p>');
+
+                //Mark initial forms as such
+                var numInitialForms = $('#id_{{formset.prefix}}-INITIAL_FORMS').val();
+                var i = 0;
+                $sortItem.each(function () {
+                    if (i < numInitialForms) {
+                        $(this).addClass("initial-form");
+                        i++;
+                    } else {
+                        return false;
+                    }
+                });
+
+                var numTotalForms = $('#id_{{formset.prefix}}-TOTAL_FORMS').val();
+                //Fix order (important if page reloads after validation failed)
+                for (i = 1; i < numTotalForms; i++) {
+                    $sortItem.find('[id$=ORDER][value=' + (i + 1) + ']').parents(".sort-item").insertAfter($sortItem.find('[id$=ORDER][value=' + i + ']').parents(".sort-item"));
+                }
+
+
+                {% if formset.can_order %}
+
+                //Set up sortable jQuery UI interaction
+                var $sortable = $('#sortable');
+
+                $sortable.sortable({
+                    items: ".sort-item",
+                    axis: "x y",
+                    scrollSensitivity: 100,
+                    scrollSpeed: 5,
+                    tolerance: "intersect",
+                    handle: ".sort-handle",
+                    cancel: "input,textarea,select,option",
+                    helper: 'clone',
+                    opacity: '.5',
+                    start: function(event, ui) {
+                      $('.sort').find('li:hidden').show();
+                    }
+                });
+                $sortable.on("sortupdate", function (event, ui) {
+                    setUpDownButtons();
+                });
+                setUpDownButtons();
+
+                $(document).on('click', '.up-form', function () {
+                    var $parentSortItem = $(this).parents(".sort-item");
+                    $parentSortItem.insertBefore($parentSortItem.prev());
+                    setUpDownButtons();
+                });
+
+                $(document).on('click', '.down-form', function () {
+                    var $parentSortItem = $(this).parents(".sort-item");
+                    $parentSortItem.insertAfter($parentSortItem.next());
+                    setUpDownButtons();
+                });
+
+                {% endif %}
+
+                // Remove form
+                $(document).on('click', '.delete-form', function () {
+                    var $parentSortItem = $(this).parents(".sort-item");
+                    if ($parentSortItem.hasClass('initial-form')) {
+                        $parentSortItem.effect('drop');
+                        $parentSortItem.find('[id$=DELETE]').prop('checked', true);
+                    } else {
+                        $parentSortItem.effect('drop', function () {
+                            $(this).remove();
+                            sortItemCounter--;
+                            $('#id_{{formset.prefix}}-TOTAL_FORMS').attr('value', sortItemCounter);
+                        });
+                    }
+                });
+
+                // Add form
+                $(document).on('click', '.add-form', function () {
+                    var formCopy = $emptyForm.clone();
+                    var formCopyString = formCopy.html().replace(/__prefix__/g, "" + sortItemCounter);
+                    formCopy.html(formCopyString);
+                    $(this).parents(".sort-item").after(formCopy);
+
+                    var color = $(this).parents(".sort-item").find('input[type="color"]').val();
+                    $(this).parents(".sort-item").next().find('input[type="color"]').val(color);
+
+                    var name = $(this).parents(".sort-item").find('input[placeholder="Name"]').val();
+                    $(this).parents(".sort-item").next().find('input[placeholder="Name"]').val(name);
+
+                    sortItemCounter++;
+                    $('#id_{{ formset.prefix }}-TOTAL_FORMS').attr('value', sortItemCounter);
+
+                    initSelect2($(this).parents(".sort-item").next().find('select'));
+                });
+
+                // Add form 2
+                $(document).on('click', '.add-form-detached', function () {
+                    var formCopy = $emptyForm.clone();
+                    var formCopyString = formCopy.html().replace(/__prefix__/g, "" + sortItemCounter);
+                    formCopy.html(formCopyString);
+
+                    $("#sortable").append(formCopy);
+
+                    $('#id_{{ formset.prefix }}-' + sortItemCounter + '-color').val($('#id_repaint_all_items').val());
+                    $('#id_{{ formset.prefix }}-' + sortItemCounter + '-name').val($('#id_rename_all_items').val());
+
+                    initSelect2($("#sortable").last().find('select'));
+
+                    sortItemCounter++;
+                    $('#id_{{ formset.prefix }}-TOTAL_FORMS').attr('value', sortItemCounter);
+                });
+
+                //Submit formset
+                $(document).on('click', '.form-submit', function (e) {
+                    e.preventDefault();
+                    $('.sort-item').each(function () {
+                        if (allEmpty($(this))) {
+                            $(this).remove();
+                        }
+                    });
+                    {% if formset.can_order %}
+                    correctOrder();
+                    {% endif %}
+                    $(this).parents("form").submit();
+                });
             });
         </script>
 {% endblock %}
@@ -66,79 +258,17 @@
 {% block content %}
     <div class="container">
         <form id="item_formset" method="POST" action="{% url 'scrumboard:sprint_planning' sprint.pk %}">
-            <div class="card card-primary-outline">
-                <div class="card-header card-primary"></div>
-                <div class="card-block">
-                    <div class="row">
-                        <div class="col-xs-4">
-                            <button id="form_submit_top" type="submit" class="btn btn-primary-outline btn-block">{% fa_icon "send" %} Submit</button>
-                        </div>
-                        <div class="col-xs-offset-4 col-xs-3">
-                            <div class="input-group">
-                                <span class="input-group-addon" id="id_total_estimate_label_top">Estimate:</span>
-                                <input type="text" id="id_total_estimate_top" name="total_estimate" class="form-control" value="{{ estimate_total }}" aria-describedby="id_total_estimate_label_top" readonly>
-                                <span class="input-group-addon {% if estimate_total > sprint.capacity %}danger{% else %}success{% endif %}">/{{ sprint.capacity }}</span>
-                            </div>
-                        </div>
-                        <div class="col-xs-1">
-                            <a name="up" href="#bottom" class="btn btn-secondary-outline btn-block">{% fa_icon 'arrow-down' %}</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <fieldset hidden>
                 {% csrf_token %}
                 {{ formset.management_form }}
             </fieldset>
-            <div id="form_set" class="row">
-            {% for form in formset %}
-                <div class="col-xs-12 col-md-6">
-                    <div id='id_{{ form.prefix }}' class="card">
-                        <div class="card-header"></div>
-                        <div class="card-block">
-                            {% scrumboard_item_form form %}
-                        </div>
-                        <div class="list-group list-group-flush">
-                            <div class="list-group-item">
-                                <fieldset class="row">
-                                    {% bootstrap_field form.status form_group_class='col-xs-5 form-group' %}
-                                    {% bootstrap_field form.assignee form_group_class='col-xs-5 form-group' %}
-                                    {% bootstrap_field form.color form_group_class='col-xs-2 form-group' %}
-                                </fieldset>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-            </div>
-            <div id="id_item_set_empty_form">
-                <div class="col-xs-12 col-md-6">
-                    <div id="id_{{ formset.empty_form.prefix }}" class="card card-warning-outline">
-                        <div class="card-header card-warning"></div>
-                        <div class="card-block">
-                            {% scrumboard_item_form formset.empty_form %}
-                        </div>
-                        <div class="list-group list-group-flush">
-                            <div class="list-group-item">
-                                <fieldset class="row">
-                                    {% bootstrap_field formset.empty_form.status form_group_class='col-xs-5 form-group' %}
-                                    {% bootstrap_field formset.empty_form.assignee form_group_class='col-xs-5 form-group' %}
-                                    {% bootstrap_field formset.empty_form.color form_group_class='col-xs-2 form-group' %}
-                                </fieldset>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="card card-primary-outline">
                 <div class="card-header card-primary"></div>
                 <div class="list-group list-group-flush">
                     <div class="list-group-item">
                         <div class="row">
                             <div class="col-xs-4">
-                                <button type="button" class="btn btn-success-outline btn-block" onclick="addMore()">
-                                    {% fa_icon "plus" %} Add More
-                                </button>
+                                <button type="button" class="btn btn-success-outline btn-block add-form-detached">{% fa_icon "plus" %} New Item</button>
                             </div>
                             <div class="col-xs-4">
                                 <div class="input-group">
@@ -160,24 +290,107 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="card-block">
-                    <div class="row">
-                        <div class="col-xs-4">
-                            <button id="form_submit_bottom" type="submit" class="btn btn-primary-outline btn-block">{% fa_icon "send" %} Submit</button>
-                        </div>
-                        <div class="col-xs-offset-4 col-xs-3">
-                            <div class="input-group">
-                                <span class="input-group-addon" id="id_total_estimate_label_bottom">Estimate:</span>
-                                <input type="text" name="total_estimate" class="form-control" value="{{ estimate_total }}" aria-describedby="id_total_estimate_label_bottom" readonly>
-                                <span class="input-group-addon {% if estimate_total > sprint.capacity %}danger{% else %}success{% endif %}">/{{ sprint.capacity }}</span>
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <button type="button" class="btn btn-primary-outline btn-block form-submit">{% fa_icon "send" %} Submit</button>
                             </div>
-                        </div>
-                        <div class="col-xs-1">
-                            <a name="bottom" href="#up" class="btn btn-secondary-outline btn-block">{% fa_icon 'arrow-up' %}</a>
+                            <div class="col-xs-offset-4 col-xs-3">
+                                <div class="input-group">
+                                    <span class="input-group-addon" id="id_total_estimate_label_bottom">Estimate:</span>
+                                    <input type="text" name="total_estimate" class="form-control" value="{{ estimate_total }}" aria-describedby="id_total_estimate_label_bottom" readonly>
+                                    <span class="input-group-addon {% if estimate_total > sprint.capacity %}danger{% else %}success{% endif %}">/{{ sprint.capacity }}</span>
+                                </div>
+                            </div>
+                            <div class="col-xs-1">
+                                <a name="bottom" href="#up" class="btn btn-secondary-outline btn-block">{% fa_icon 'arrow-up' %}</a>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
+            {% bootstrap_messages %}
+            <div id="sortable" class="card-columns">
+                <div style="display:none" id="empty-form">
+                    <div id="id_{{ formset.empty_form.prefix }}" class="card card-warning-outline sort-item">
+                        <div class="card-header card-warning"></div>
+                        <div class="card-block">
+                            {% scrumboard_item_form formset.empty_form %}
+                        </div>
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item">
+                                <fieldset class="row">
+                                    {% bootstrap_field formset.empty_form.status show_label=False form_group_class='col-xs-5 form-group' %}
+                                    {% bootstrap_field formset.empty_form.assignee show_label=False form_group_class='col-xs-5 form-group' %}
+                                    {% bootstrap_field formset.empty_form.color show_label=False form_group_class='col-xs-2 form-group' %}
+                                </fieldset>
+                            </div>
+                            <div class="list-group-item">
+                                <fieldset hidden>
+                                    {% if formset.can_delete %}
+                                        {{ formset.empty_form.DELETE }}
+                                    {% endif %}
+                                    {% if formset.can_order %}
+                                        {{ formset.empty_form.ORDER }}
+                                    {% endif %}
+                                </fieldset>
+                                <!-- based on django-bootstrap-dynamic-formset https://pypi.python.org/pypi/django-bootstrap-dynamic-formsets -->
+                                {% if formset.can_order %}
+                                <button type="button" class="btn btn-sm btn-warning-outline sort-handle">{% fa_icon 'arrows' %}</button>
+                                <div class="btn-group btn-group-sm" role="group" aria-label="ordering_button_group">
+                                    <button type="button" class="btn btn-secondary up-form">{% fa_icon 'arrow-up' %}</button>
+                                    <button type="button" class="btn btn-secondary down-form">{% fa_icon 'arrow-down' %}</button>
+                                </div>
+                                {% endif %}
+                                {% if formset.can_delete %}
+                                <button type="button" class="btn btn-sm btn-danger-outline delete-form">{% fa_icon 'trash' %}</button>
+                                {% endif %}
+                                <button type="button" class="btn btn-sm btn-success-outline add-form">{% fa_icon 'plus' %}</button>
+                                <button type="submit" class="btn btn-sm btn-primary-outline submit-form">{% fa_icon 'check' %}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% for form in formset %}
+                <div id='id_{{ form.prefix }}' class="card sort-item">
+                    <div class="card-header"></div>
+                    <div class="card-block">
+                        {% scrumboard_item_form form %}
+                    </div>
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item">
+                            <fieldset class="row">
+                                {% bootstrap_field form.status show_label=False form_group_class='col-xs-5 form-group' %}
+                                {% bootstrap_field form.assignee show_label=False form_group_class='col-xs-5 form-group' %}
+                                {% bootstrap_field form.color show_label=False form_group_class='col-xs-2 form-group' %}
+                            </fieldset>
+                        </div>
+                        <div class="list-group-item">
+                            <fieldset hidden>
+                                {% if formset.can_delete %}
+                                    {{ form.DELETE }}
+                                {% endif %}
+                                {% if formset.can_order %}
+                                    {{ form.ORDER }}
+                                {% endif %}
+                            </fieldset>
+                            <!-- based on django-bootstrap-dynamic-formset https://pypi.python.org/pypi/django-bootstrap-dynamic-formsets -->
+                            {% if formset.can_order %}
+                            <button type="button" class="btn btn-sm btn-warning-outline sort-handle">{% fa_icon 'arrows' %}</button>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="ordering_button_group">
+                                <button type="button" class="btn btn-secondary up-form">{% fa_icon 'arrow-up' %}</button>
+                                <button type="button" class="btn btn-secondary down-form">{% fa_icon 'arrow-down' %}</button>
+                            </div>
+                            {% endif %}
+                            {% if formset.can_delete %}
+                            <button type="button" class="btn btn-sm btn-danger-outline delete-form">{% fa_icon 'trash' %}</button>
+                            {% endif %}
+                            <button type="button" class="btn btn-sm btn-success-outline add-form">{% fa_icon 'plus' %}</button>
+                            <button type="submit" class="btn btn-sm btn-primary-outline submit-form">{% fa_icon 'check' %}</button>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
             </div>
         </form>
     </div>

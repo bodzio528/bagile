@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>{% load staticfiles %}{% load scrumboard_extras %}
+    <head>
+        {% load staticfiles %}{% load scrumboard_extras %}
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -47,14 +48,15 @@
             </div>
         </nav>
         {% block content %}{% endblock %}
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+        <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/js/tether.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/js/bootstrap.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
 
         <script>
-            var initSelect2 = function(selector) {
-                $(selector).select2({
+            var initSelect2 = function($objs) {
+                $objs.select2({
                     theme: "bootstrap",
                     width: 'resolve',
                     minimumResultsForSearch: 20
@@ -62,7 +64,8 @@
             };
 
             $(function(){
-                initSelect2('select:visible');
+                // TODO: be more specific, e.g. class selector
+                initSelect2($('select:visible'));
             });
         </script>
         {% block scripts %}{% endblock %}

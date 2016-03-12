@@ -60,6 +60,9 @@ class Sprint(models.Model):
 # | Status | Sprint |   Assigned User   |
 # +-------------------------------------+
 class Item(models.Model):
+    class Meta:
+        ordering = ['manual_order', ]
+
     COMMITTED = 1
     WIP = 2
     PENDING_REVIEW = 3
@@ -106,6 +109,11 @@ class Item(models.Model):
         on_delete=models.CASCADE,
         blank=True,
         null=True,
+    )
+    manual_order = models.IntegerField(
+        default=0,
+        blank=True,
+        null=True
     )
 
     def __str__(self):

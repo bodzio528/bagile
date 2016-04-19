@@ -94,6 +94,15 @@ def fa_icon(icon_name, icon_size=None):
     return mark_safe('<i class="fa{0}{1}"></i>'.format(icon, size))
 
 
+@register.filter
+def is_scrum_master(user):
+    if user.is_authenticated:
+        if user.is_superuser:
+            return True
+        else:
+            return user.groups.filter(name='Scrum Masters').exists()
+    return False
+
 # @register.simple_tag
 # def bootstrap4_select2_field(field):
 #     #import pdb; pdb.set_trace()

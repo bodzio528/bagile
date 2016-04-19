@@ -37,7 +37,7 @@ class ScrumboardView(SessionCurrentSprintMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(ScrumboardView, self).get_context_data(**kwargs)
 
-        developers = User.objects.filter(groups__name='developers')
+        developers = User.objects.filter(groups__name='Developers')
 
         current_sprint = self.get_current_sprint()
 

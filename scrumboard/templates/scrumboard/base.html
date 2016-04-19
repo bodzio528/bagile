@@ -43,6 +43,11 @@
                     <li class="nav-item">
                         <a id="id_nav_link_burndown" class="nav-link" href="{% url 'scrumboard:sprint_current_burndown_chart' %}">Burndown</a>
                     </li>
+                    <li class="nav-item">
+                        {% if user.is_authenticated %}
+                        <span class="label label-{% if user.is_superuser %}danger{% else %}{% if user|is_scrum_master %}warning{% else %}info{% endif %}{% endif %}">{{ user.get_username }}</span>
+                        {% endif %}
+                    </li>
                 </ul>
                 {% scrumboard_sprint_active_select %}
             </div>

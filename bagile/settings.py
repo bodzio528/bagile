@@ -150,3 +150,16 @@ BOOTSTRAP3 = {
     # The Bootstrap base URL
     'base_url': 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/',
 }
+
+GROUPS_PERMISSIONS = {
+    'Developers': [
+        'add_item',
+        'change_item',
+        'delete_item',
+    ],
+    'Scrum Masters': [
+        'add_sprint',
+        'change_sprint',
+        'delete_sprint',
+    ]
+}

@@ -13,7 +13,7 @@ from scrumboard.models import Sprint
 class SprintViewTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        developers = Group.objects.create(name='developers')
+        developers = Group.objects.get(name='Developers')
 
         dev1 = User.objects.create_user(username='dev1', email='dev1@localhost', password='top_secret')
         dev1.groups.add(developers)

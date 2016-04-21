@@ -45,7 +45,7 @@ class ScrumboardViewTestCase(TestCase):
         assert item in response.context['unassigned_items']['COMMITTED']
 
     def test_user_appears_in_assigned_items(self):
-        developers = Group.objects.create(name='Developers')
+        developers = Group.objects.get(name='Developers')
 
         dev1 = User.objects.create_user(username='dev1', email='dev1@localhost', password='top_secret')
         dev1.groups.add(developers)
